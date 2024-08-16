@@ -134,7 +134,7 @@
                 "id": "0886ac00-6ab6-41a6-b0e1-8d3faf2e0de3",
                 "account_name": "currencycloud2",
                 "account_holder_name": "The Currency Cloud 2",
-                "account_holder_dob": "1990-07-20",
+                "account_holder_dob": "1990-07-20Z",
                 "routing_code": "223456789",
                 "account_number": "01234567892",
                 "currency": "GBP",

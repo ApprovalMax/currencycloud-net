@@ -20,9 +20,9 @@ namespace CurrencyCloud.Entity
 
         public string BuyCurrency { get; set; }
 
-        public DateTime? SettlementDate { get; set; }
+        public DateTimeOffset? SettlementDate { get; set; }
 
-        public DateTime? ConversionDate { get; set; }
+        public DateTimeOffset? ConversionDate { get; set; }
 
         public string Status { get; set; }
 

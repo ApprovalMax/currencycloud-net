@@ -9,13 +9,13 @@ namespace CurrencyCloud.Entity
         [JsonConstructor]
         public ConversionDateChangeDetails() { }
 
-        public DateTime? InitialValueDate { get; set; }
+        public DateTimeOffset? InitialValueDate { get; set; }
 
-        public DateTime? CurrentValueDate { get; set; }
+        public DateTimeOffset? CurrentValueDate { get; set; }
 
-        public DateTime? InitialDeliveryDate { get; set; }
+        public DateTimeOffset? InitialDeliveryDate { get; set; }
 
-        public DateTime? CurrentDeliveryDate { get; set; }
+        public DateTimeOffset? CurrentDeliveryDate { get; set; }
 
         public decimal? TotalProfitAndLoss { get; set; }
 
@@ -74,11 +74,11 @@ namespace CurrencyCloud.Entity
             [JsonConstructor]
             public DateChange() {}
 
-            public DateTime? RequestedValueDate { get; set; }
+            public DateTimeOffset? RequestedValueDate { get; set; }
 
-            public DateTime? NewValueDate { get; set; }
+            public DateTimeOffset? NewValueDate { get; set; }
 
-            public DateTime? NewDeliveryDate { get; set; }
+            public DateTimeOffset? NewDeliveryDate { get; set; }
 
             public decimal? ProfitAndLoss { get; set; }
 

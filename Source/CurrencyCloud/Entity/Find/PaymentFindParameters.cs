@@ -50,49 +50,49 @@ namespace CurrencyCloud.Entity
         /// ISO 8601 Date when the payment should be paid
         ///</summary>
         [Param]
-        public DateTime? PaymentDateFrom { get; set; }
+        public DateTimeOffset? PaymentDateFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Date when the payment should be paid
         ///</summary>
         [Param]
-        public DateTime? PaymentDateTo { get; set; }
+        public DateTimeOffset? PaymentDateTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the payment should be transfered
         ///</summary>
         [Param]
-        public DateTime? TransferredAtFrom { get; set; }
+        public DateTimeOffset? TransferredAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the payment should be transfered
         ///</summary>
         [Param]
-        public DateTime? TransferredAtTo { get; set; }
+        public DateTimeOffset? TransferredAtTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the payment was created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtFrom { get; set; }
+        public DateTimeOffset? CreatedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the payment was created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtTo { get; set; }
+        public DateTimeOffset? CreatedAtTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the payment was updated
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtFrom { get; set; }
+        public DateTimeOffset? UpdatedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the payment was updated
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtTo { get; set; }
+        public DateTimeOffset? UpdatedAtTo { get; set; }
 
         ///<summary>
         /// ID of the beneficiary

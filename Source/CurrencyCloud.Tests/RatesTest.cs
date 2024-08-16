@@ -63,7 +63,7 @@ namespace CurrencyCloud.Tests
                 var gotten = await client.GetRateAsync(request);
                 Assert.That(gotten, Is.Not.Null);
                 Assert.AreEqual(14081.0, gotten.ClientSellAmount);
-                Assert.AreEqual(DateTime.Parse("2020-05-21T14:00:00"), gotten.SettlementCutOffTime);
+                Assert.AreEqual(DateTimeOffset.Parse("2020-05-21T14:00:00Z"), gotten.SettlementCutOffTime);
             });
         }
 

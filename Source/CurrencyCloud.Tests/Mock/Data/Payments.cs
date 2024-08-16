@@ -108,9 +108,9 @@ namespace CurrencyCloud.Tests.Mock.Data
             ShortReference = "PC-2436231-LYODVS",
             Status = "completed",
             ConfirmationUrl = "https://ccycloud-reports.example.com/payment_confirmations/404b407a-d143-4497-b5b9-6eb856377e20",
-            CreatedAt = new DateTime(2018, 01, 01, 12, 34, 56),
-            UpdatedAt = new DateTime(2018, 01, 01, 12, 34, 56),
-            ExpiresAt = new DateTime(2018, 01, 03)
+            CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
+            UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
+            ExpiresAt = DateTimeOffset.Parse("2018-01-03T00:00:00+00:00"),
         };
 
         public static readonly PaymentTrackingInfo TrackingInfo1 = new Entity.PaymentTrackingInfo

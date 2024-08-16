@@ -20,36 +20,36 @@ namespace CurrencyCloud.Entity
         /// ISO 8601 Datetime when the settlement was created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtFrom { get; set; }
+        public DateTimeOffset? CreatedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the settlement was created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtTo { get; set; }
+        public DateTimeOffset? CreatedAtTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the settlement was updated
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtFrom { get; set; }
+        public DateTimeOffset? UpdatedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the settlement was updated
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtTo { get; set; }
+        public DateTimeOffset? UpdatedAtTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the settlement was updated
         ///</summary>
         [Param]
-        public DateTime? ReleasedAtFrom { get; set; }
+        public DateTimeOffset? ReleasedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Datetime when the settlement was updated
         ///</summary>
         [Param]
-        public DateTime? ReleasedAtTo { get; set; }
+        public DateTimeOffset? ReleasedAtTo { get; set; }
     }
 }

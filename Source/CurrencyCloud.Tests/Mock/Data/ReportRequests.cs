@@ -19,11 +19,11 @@ namespace CurrencyCloud.Tests.Mock.Data
             },
             ReportType = "conversion",
             AccountId = "e277c9f9-679f-454f-8367-274b3ff977ff",
-            CreatedAt = new DateTime(2018, 1, 1, 12, 34, 56),
+            CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
             Id = "de5c215d-93e2-4b24-bdc8-bffbcd80c60f",
             Status = "completed",
-            ExpirationDate = new DateTime(2018, 01, 31),
-            UpdatedAt = new DateTime(2018, 01, 01, 12, 34, 56)
+            ExpirationDate = DateTimeOffset.Parse("2018-01-31T00:00:00Z"),
+            UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
         };
 
         public static readonly Entity.ReportRequest Report2 = new Entity.ReportRequest
@@ -39,11 +39,11 @@ namespace CurrencyCloud.Tests.Mock.Data
             },
             ReportType = "payment",
             AccountId = "e277c9f9-679f-454f-8367-274b3ff977ff",
-            CreatedAt = new DateTime(2018, 1, 1, 12, 34, 56),
+            CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
             Id = "2d71d2de-bc17-4ffb-88f4-d644b327340f",
             Status = "completed",
-            ExpirationDate = new DateTime(2018, 01, 31),
-            UpdatedAt = new DateTime(2018, 01, 01, 12, 34, 56)
+            ExpirationDate = DateTimeOffset.Parse("2018-01-31T00:00:00Z"),
+            UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00")
         };
 
         public static readonly Entity.ReportRequest Report3 = new Entity.ReportRequest
@@ -59,12 +59,12 @@ namespace CurrencyCloud.Tests.Mock.Data
             },
             ReportType = "conversion",
             AccountId = "e277c9f9-679f-454f-8367-274b3ff977ff",
-            CreatedAt = new DateTime(2018, 1, 1, 12, 34, 56),
+            CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
             Id = "175b3a52-6413-4586-92d5-54f9c9d2b113",
             Status = "processing",
             FailureReason = null,
             ExpirationDate = null,
-            UpdatedAt = new DateTime(2018, 01, 01, 12, 34, 56)
+            UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00")
         };
 
         public static readonly Entity.ReportRequest Report4 = new Entity.ReportRequest
@@ -80,12 +80,12 @@ namespace CurrencyCloud.Tests.Mock.Data
             },
             ReportType = "payment",
             AccountId = "e277c9f9-679f-454f-8367-274b3ff977ff",
-            CreatedAt = new DateTime(2018, 1, 1, 12, 34, 56),
+            CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
             Id = "0ec2bc31-5dd8-4029-9491-6c4c0598a1cc",
             Status = "processing",
             FailureReason = null,
             ExpirationDate = null,
-            UpdatedAt = new DateTime(2018, 01, 01, 12, 34, 56)
+            UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00")
         };
     }
 }

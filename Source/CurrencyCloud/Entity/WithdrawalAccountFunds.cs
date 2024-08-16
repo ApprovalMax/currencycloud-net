@@ -31,7 +31,7 @@ namespace CurrencyCloud.Entity
         /// <summary>
         /// Datetime funds pulled
         /// </summary>
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
         
         public string ToJSON()
         {

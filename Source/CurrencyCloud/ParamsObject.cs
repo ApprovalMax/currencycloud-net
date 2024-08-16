@@ -144,9 +144,9 @@ namespace CurrencyCloud
                 }
 
                 string value;
-                if (param.Value is DateTime)
+                if (param.Value is DateTimeOffset)
                 {
-                    value = ((DateTime)param.Value).ToString("yyyy-MM-dd");
+                    value = ((DateTimeOffset)param.Value).ToString("yyyy-MM-dd");
                 }
                 else if (param.Value is bool)
                 {
@@ -178,9 +178,9 @@ namespace CurrencyCloud
                 return string.Join("&", values.ToList());
             }
             String value;
-            if (param.Value is DateTime)
+            if (param.Value is DateTimeOffset)
             {
-                value = ((DateTime)param.Value).ToString("yyyy-MM-dd");
+                value = ((DateTimeOffset)param.Value).ToString("yyyy-MM-dd");
             }
             else if (param.Value is bool)
             {

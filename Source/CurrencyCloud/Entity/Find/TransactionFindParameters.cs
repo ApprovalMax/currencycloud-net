@@ -75,49 +75,49 @@ namespace CurrencyCloud.Entity
         /// ISO 8601 expected processing date
         ///</summary>
         [Param]
-        public DateTime? SettlesAtFrom { get; set; }
+        public DateTimeOffset? SettlesAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 expected processing date
         ///</summary>
         [Param]
-        public DateTime? SettlesAtTo { get; set; }
+        public DateTimeOffset? SettlesAtTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Date when the transaction was created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtFrom { get; set; }
+        public DateTimeOffset? CreatedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Date when the transaction was created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtTo { get; set; }
+        public DateTimeOffset? CreatedAtTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Date when the transaction was last updated
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtFrom { get; set; }
+        public DateTimeOffset? UpdatedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Date when the transaction was last updated
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtTo { get; set; }
+        public DateTimeOffset? UpdatedAtTo { get; set; }
 
         ///<summary>
         /// ISO 8601 Date when the transaction was processed
         ///</summary>
         [Param]
-        public DateTime? CompletedAtFrom { get; set; }
+        public DateTimeOffset? CompletedAtFrom { get; set; }
 
         ///<summary>
         /// ISO 8601 Date when the transaction was processed
         ///</summary>
         [Param]
-        public DateTime? CompletedAtTo { get; set; }
+        public DateTimeOffset? CompletedAtTo { get; set; }
 
         ///<summary>
         /// Beneficiary id for payments. Should be passed with related_entity_type = payment

@@ -96,7 +96,7 @@ namespace CurrencyCloud.Tests
             Assert.AreEqual("GBP", topUp.Currency);
             Assert.AreEqual(450, topUp.TransferredAmount);
             Assert.AreEqual("6c046c51-2387-4004-8e87-4bf97102e36d", topUp.AccountId);
-            Assert.AreEqual(DateTime.Parse("2007-11-19 14:37:48"), topUp.TransferCompletedAt);
+            Assert.AreEqual(DateTimeOffset.Parse("2007-11-19 14:37:48Z"), topUp.TransferCompletedAt);
 
 
         }

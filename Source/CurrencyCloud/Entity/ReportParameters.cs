@@ -27,35 +27,35 @@ namespace CurrencyCloud.Entity
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? PaymentDateFrom { get; set; }
+            public DateTimeOffset? PaymentDateFrom { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? PaymentDateTo { get; set; }
+            public DateTimeOffset? PaymentDateTo { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? TransferredAtFrom { get; set; }
+            public DateTimeOffset? TransferredAtFrom { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? TransferredAtTo { get; set; }
+            public DateTimeOffset? TransferredAtTo { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? CreatedAtFrom { get; set; }
+            public DateTimeOffset? CreatedAtFrom { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? CreatedAtTo { get; set; }
+            public DateTimeOffset? CreatedAtTo { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? UpdatedAtFrom { get; set; }
+            public DateTimeOffset? UpdatedAtFrom { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? UpdatedAtTo { get; set; }
+            public DateTimeOffset? UpdatedAtTo { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
@@ -127,19 +127,19 @@ namespace CurrencyCloud.Entity
             
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? ConversionDateFrom { get; set; }
+            public DateTimeOffset? ConversionDateFrom { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? ConversionDateTo { get; set; }
+            public DateTimeOffset? ConversionDateTo { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? SettlementDateFrom { get; set; }
+            public DateTimeOffset? SettlementDateFrom { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTime? SettlementDateTo { get; set; }
+            public DateTimeOffset? SettlementDateTo { get; set; }
 
             public override bool Equals(object obj)
             {

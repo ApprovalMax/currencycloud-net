@@ -167,8 +167,9 @@ namespace CurrencyCloud.Tests
 
             Conversion created = await client.CreateConversionAsync(conversion1);
 
-            DateTime newSettlementDate = DateTime.Parse("2018-02-02T12:34:56+00:00");
-            ConversionDateChange dateChangeQuoted = await client.QuoteDateChangeConversionAsync(new ConversionDateChange {
+            DateTimeOffset newSettlementDate = DateTimeOffset.Parse("2018-02-02T12:34:56+00:00");
+            ConversionDateChange dateChangeQuoted = await client.QuoteDateChangeConversionAsync(new ConversionDateChange
+            {
                 ConversionId = created.Id,
                 NewSettlementDate = newSettlementDate
             });
@@ -194,8 +195,9 @@ namespace CurrencyCloud.Tests
 
             Conversion created = await client.CreateConversionAsync(conversion1);
 
-            DateTime newSettlementDate = DateTime.Parse("2018-02-02T12:34:56+00:00");
-            ConversionDateChange dateChanged = await client.DateChangeConversionAsync(new ConversionDateChange {
+            DateTimeOffset newSettlementDate = DateTimeOffset.Parse("2018-02-02T12:34:56+00:00");
+            ConversionDateChange dateChanged = await client.DateChangeConversionAsync(new ConversionDateChange
+            {
                 ConversionId = created.Id,
                 NewSettlementDate = newSettlementDate
             });
@@ -357,7 +359,7 @@ namespace CurrencyCloud.Tests
 
             Assert.That(created, Is.Not.Null);
             Assert.AreEqual(805.90, created.ClientSellAmount);
-            Assert.AreEqual(DateTime.Parse("2020-05-19T00:00:00+00:00"), created.ConversionDate);
+            Assert.AreEqual(DateTimeOffset.Parse("2020-05-19T00:00:00+00:00"), created.ConversionDate);
 
         }
     }
