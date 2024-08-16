@@ -5,68 +5,64 @@ using CurrencyCloud.Environment;
 using CurrencyCloud.Exception;
 using System.Threading.Tasks;
 
-namespace CurrencyCloud.Tests;
-
-[TestFixture]
-internal class BackoffRetryTest
+namespace CurrencyCloud.Tests
 {
-    [OneTimeSetUpAttribute]
-    public void SetUp()
+    [TestFixture]
+    class BackoffRetryTest
     {
-        player.Start(ApiServer.Mock.Url);
-        Retry.Enabled = true;
-        Retry.NumRetries = 3;
-        Retry.MinWait = 10;
-        Retry.MaxWait = 100;
-    }
+        Client client = new Client();
+        Player player = new Player("/../../Mock/Http/Recordings/BackoffRetry.json");
+        Credentials credentials = new Credentials("development@currencycloud.com", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
 
-    [OneTimeTearDownAttribute]
-    public void TearDown()
-    {
-        player.Close();
-        Retry.Enabled = false;
-    }
+        [OneTimeSetUpAttribute]
+        public void SetUp()
+        {
+            player.Start(ApiServer.Mock.Url);
+            Retry.Enabled = true;
+            Retry.NumRetries = 3;
+            Retry.MinWait = 10;
+            Retry.MaxWait = 100;
+        }
 
-    private readonly Client client = new();
-    private readonly Player player = new("/Mock/Http/Recordings/BackoffRetry.json");
+        [OneTimeTearDownAttribute]
+        public void TearDown()
+        {
+            player.Close();
+            Retry.Enabled = false;
+        }
 
-    private readonly Credentials credentials = new("development@currencycloud.com",
-        "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
+        /// <summary>
+        /// Unauthorized Access Error (401)
+        /// </summary>
+        [Test]
+        public void AuthenticationError()
+        {
+            player.Play("AuthenticationError");
 
-    /// <summary>
-    ///     Unauthorized Access Error (401)
-    /// </summary>
-    [Test]
-    public void AuthenticationError()
-    {
-        player.Play("AuthenticationError");
+            var credentials = new Credentials("nobody@nowhere.com", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
+            Assert.ThrowsAsync<AuthenticationException>(async () => await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey));
+        }
 
-        var credentials = new Credentials("nobody@nowhere.com",
-            "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
-        Assert.ThrowsAsync<AuthenticationException>(async () =>
-            await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey));
-    }
+        /// <summary>
+        /// Too Many Requests Error (429)
+        /// </summary>
+        [Test]
+        public void TooManyRequestsError()
+        {
+            player.Play("TooManyRequestsError");
+            client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey).Wait();
 
-    /// <summary>
-    ///     Too Many Requests Error (429)
-    /// </summary>
-    [Test]
-    public void TooManyRequestsError()
-    {
-        player.Play("TooManyRequestsError");
-        client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey).Wait();
+            Assert.ThrowsAsync<TooManyRequestsException>(async () => await client.GetCurrentAccountAsync());
+        }
 
-        Assert.ThrowsAsync<TooManyRequestsException>(async () => await client.GetCurrentAccountAsync());
-    }
-
-    /// <summary>
-    ///     Internal Server Error (500)
-    /// </summary>
-    [Test]
-    public void InternalApplicationError()
-    {
-        player.Play("InternalApplicationError");
-        Assert.ThrowsAsync<InternalApplicationException>(async () =>
-            await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey));
+        /// <summary>
+        /// Internal Server Error (500)
+        /// </summary>
+        [Test]
+        public void InternalApplicationError()
+        {
+            player.Play("InternalApplicationError");
+            Assert.ThrowsAsync<InternalApplicationException>(async () => await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey));
+        }
     }
 }
