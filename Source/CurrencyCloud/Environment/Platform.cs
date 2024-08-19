@@ -6,7 +6,7 @@ namespace CurrencyCloud.Environment
     internal static class Platform
     {
         /// <summary>
-        ///     Gets version number of the installed Mono or .NET framework.
+        /// Gets .NET version number.
         /// </summary>
         public static readonly string Version;
 
