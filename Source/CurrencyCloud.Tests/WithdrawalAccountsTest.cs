@@ -13,7 +13,7 @@ namespace CurrencyCloud.Tests.Mock
     class WithdrawalAccountsTest
     {
         Client client = new Client();
-        Player player = new Player("/../../Mock/Http/Recordings/WithdrawalAccounts.json");
+        Player player = new Player("/Mock/Http/Recordings/WithdrawalAccounts.json");
 
         [OneTimeSetUpAttribute]
         public void SetUp()
@@ -82,7 +82,7 @@ namespace CurrencyCloud.Tests.Mock
             Assert.AreEqual("0886ac00-6ab6-41a6-b0e1-8d3faf2e0de3", found.WithdrawalAccounts[1].Id);
             Assert.AreEqual("currencycloud2", found.WithdrawalAccounts[1].AccountName);
             Assert.AreEqual("The Currency Cloud 2", found.WithdrawalAccounts[1].AccountHolderName);
-            Assert.AreEqual(DateTime.Parse("1990-07-20"), found.WithdrawalAccounts[1].AccountHolderDob);
+            Assert.AreEqual(DateTimeOffset.Parse("1990-07-20Z"), found.WithdrawalAccounts[1].AccountHolderDob);
             Assert.AreEqual("223456789", found.WithdrawalAccounts[1].RoutingCode);
             Assert.AreEqual("01234567892", found.WithdrawalAccounts[1].AccountNumber);
             Assert.AreEqual("GBP", found.WithdrawalAccounts[1].Currency);
@@ -103,7 +103,7 @@ namespace CurrencyCloud.Tests.Mock
             Assert.AreEqual("0886ac00-6ab6-41a6-b0e1-8d3faf2e0de2", funds.WithdrawalAccountId);
             Assert.AreEqual("PullFunds1", funds.Reference);
             Assert.AreEqual(100, funds.Amount);
-            Assert.AreEqual(DateTime.Parse("2020-06-29T08:02:31+00:00"), funds.CreatedAt);
+            Assert.AreEqual(DateTimeOffset.Parse("2020-06-29T08:02:31+00:00"), funds.CreatedAt);
         }
     }
 }

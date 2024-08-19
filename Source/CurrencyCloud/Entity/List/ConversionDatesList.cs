@@ -8,15 +8,15 @@ namespace CurrencyCloud.Entity.List
     {
         internal ConversionDatesList() { }
 
-        public Dictionary<DateTime, string> InvalidConversionDates { get; set; }
+        public Dictionary<DateTimeOffset, string> InvalidConversionDates { get; set; }
 
-        public DateTime FirstConversionDate { get; set; }
+        public DateTimeOffset FirstConversionDate { get; set; }
 
-        public DateTime DefaultConversionDate { get; set; }
-        
-        public DateTime OptimizeLiquidityConversionDate { get; set; }
+        public DateTimeOffset DefaultConversionDate { get; set; }
 
-        public DateTime FirstConversionCutoffDatetime { get; set; }
+        public DateTimeOffset OptimizeLiquidityConversionDate { get; set; }
+
+        public DateTimeOffset FirstConversionCutoffDatetime { get; set; }
 
         public string ToJSON()
         {

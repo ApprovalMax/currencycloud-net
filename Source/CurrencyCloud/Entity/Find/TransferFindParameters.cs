@@ -50,37 +50,37 @@ namespace CurrencyCloud.Entity
         /// Any valid ISO 8601 format, eg. "2017-12-31T23:59:59Z"
         ///</summary>
         [Param]
-        public DateTime? CreatedAtFrom { get; set; }
+        public DateTimeOffset? CreatedAtFrom { get; set; }
 
         ///<summary>
         /// Any valid ISO 8601 format, eg. "2017-12-31T23:59:59Z"
         ///</summary>
         [Param]
-        public DateTime? CreatedAtTo { get; set; }
+        public DateTimeOffset? CreatedAtTo { get; set; }
 
         ///<summary>
         /// Any valid ISO 8601 format, eg. "2017-12-31T23:59:59Z"
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtFrom { get; set; }
+        public DateTimeOffset? UpdatedAtFrom { get; set; }
 
         ///<summary>
         /// Any valid ISO 8601 format, eg. "2017-12-31T23:59:59Z"
         ///</summary>
         [Param]
-        public DateTime? UpdatedAtTo { get; set; }
+        public DateTimeOffset? UpdatedAtTo { get; set; }
 
         ///<summary>
         /// Any valid ISO 8601 format, eg. "2017-12-31T23:59:59Z"
         ///</summary>
         [Param]
-        public DateTime? CompletedAtFrom { get; set; }
+        public DateTimeOffset? CompletedAtFrom { get; set; }
 
         ///<summary>
         /// Any valid ISO 8601 format, eg. "2017-12-31T23:59:59Z"
         ///</summary>
         [Param]
-        public DateTime? CompletedAtTo { get; set; }
+        public DateTimeOffset? CompletedAtTo { get; set; }
 
         ///<summary>
         /// Contact UUID of transfer instructor

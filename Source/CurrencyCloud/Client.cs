@@ -743,7 +743,7 @@ namespace CurrencyCloud
         {
             ParamsObject paramsObj = ParamsObject.CreateFromStaticObject(conversionDateChange);
             string id = conversionDateChange.ConversionId;
-            DateTime? newSettlementDate = conversionDateChange.NewSettlementDate;
+            DateTimeOffset? newSettlementDate = conversionDateChange.NewSettlementDate;
 
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentException("Conversion Id cannot be null");
@@ -764,7 +764,7 @@ namespace CurrencyCloud
         {
             ParamsObject paramsObj = ParamsObject.CreateFromStaticObject(conversionDateChange);
             string id = conversionDateChange.ConversionId;
-            DateTime? newSettlementDate = conversionDateChange.NewSettlementDate;
+            DateTimeOffset? newSettlementDate = conversionDateChange.NewSettlementDate;
 
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentException("Conversion Id cannot be null");

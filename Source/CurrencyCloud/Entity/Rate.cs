@@ -8,7 +8,7 @@ namespace CurrencyCloud.Entity
         [JsonConstructor]
         internal Rate() { }
 
-        public DateTime SettlementCutOffTime { get; set; }
+        public DateTimeOffset SettlementCutOffTime { get; set; }
 
         ///<summary>
         /// Currency pair eg. EURUSD,GBPZAR

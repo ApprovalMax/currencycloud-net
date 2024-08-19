@@ -26,7 +26,7 @@ namespace CurrencyCloud.Entity
         /// <summary>
         /// Account holder date of birth
         /// </summary>
-        public DateTime? AccountHolderDob { get; set; }
+        public DateTimeOffset? AccountHolderDob { get; set; }
 
         /// <summary>
         /// Routing Code

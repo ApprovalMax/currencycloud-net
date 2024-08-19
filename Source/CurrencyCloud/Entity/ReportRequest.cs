@@ -22,7 +22,7 @@ namespace CurrencyCloud.Entity
 
         public string FailureReason { get; set; }
 
-        public DateTime? ExpirationDate { get; set; }
+        public DateTimeOffset? ExpirationDate { get; set; }
 
         public string ReportUrl { get; set; }
 
@@ -30,9 +30,9 @@ namespace CurrencyCloud.Entity
 
         public string ContactId { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public string ToJSON()
         {

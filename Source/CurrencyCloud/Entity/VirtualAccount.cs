@@ -51,12 +51,12 @@ namespace CurrencyCloud.Entity
         /// <summary>
         /// IBAN Created At
         /// </summary>
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         /// <summary>
         /// IBAN Updated At
         /// </summary>
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public string ToJSON()
         {

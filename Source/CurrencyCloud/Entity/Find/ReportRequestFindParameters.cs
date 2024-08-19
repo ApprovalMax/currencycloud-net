@@ -20,25 +20,25 @@ namespace CurrencyCloud.Entity
         /// Start date (for range) when the reports were created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtFrom { get; set; }
+        public DateTimeOffset? CreatedAtFrom { get; set; }
 
         ///<summary>
         /// End date (for range) when the reports were created
         ///</summary>
         [Param]
-        public DateTime? CreatedAtTo { get; set; }
+        public DateTimeOffset? CreatedAtTo { get; set; }
 
         ///<summary>
         /// Start date (for range) when the report will be (was) expired
         ///</summary>
         [Param]
-        public DateTime? ExpirationDateFrom { get; set; }
+        public DateTimeOffset? ExpirationDateFrom { get; set; }
 
         ///<summary>
         /// End date (for range) when the report will be (was) expired
         ///</summary>
         [Param]
-        public DateTime? ExpirationDateTo { get; set; }
+        public DateTimeOffset? ExpirationDateTo { get; set; }
 
         ///<summary>
         /// Status of the report

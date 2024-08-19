@@ -84,9 +84,9 @@ namespace CurrencyCloud.Entity
         /// ISO 8601 Date when the payment should be paid
         ///</summary>
         [Param]
-        public DateTime? PaymentDate { get; set; }
+        public DateTimeOffset? PaymentDate { get; set; }
 
-        public DateTime? TransferredAt { get; set; }
+        public DateTimeOffset? TransferredAt { get; set; }
 
         public int? AuthorisationStepsRequired { get; set; }
 
@@ -109,9 +109,9 @@ namespace CurrencyCloud.Entity
         ///</summary>
         public string PayerDetailsSource { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public string PaymentGroupId { get; set; }
 

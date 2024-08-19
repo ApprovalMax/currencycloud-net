@@ -13,7 +13,7 @@ namespace CurrencyCloud.Tests
     public class FundingTest
     {
         Client client = new Client();
-        Player player = new Player("/../../Mock/Http/Recordings/Funding.json");
+        Player player = new Player("/Mock/Http/Recordings/Funding.json");
 
         [OneTimeSetUpAttribute]
         public void SetUp()
@@ -66,8 +66,8 @@ namespace CurrencyCloud.Tests
             Assert.AreEqual("regular", account.PaymentType);
             Assert.AreEqual("010203", account.RoutingCode);
             Assert.AreEqual("sort_code", account.RoutingCodeType);
-            Assert.AreEqual(DateTime.Parse("2018-05-14T14:18:30+00:00"), account.CreatedAt);
-            Assert.AreEqual(DateTime.Parse("2018-05-14T14:19:30+00:00"), account.UpdatedAt);
+            Assert.AreEqual(DateTimeOffset.Parse("2018-05-14T14:18:30+00:00"), account.CreatedAt);
+            Assert.AreEqual(DateTimeOffset.Parse("2018-05-14T14:19:30+00:00"), account.UpdatedAt);
         }
     }
 }

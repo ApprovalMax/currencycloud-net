@@ -20,7 +20,7 @@ namespace CurrencyCloud.Entity
         /// ISO 8601 Date Time to view balances at a specific point in time
         ///</summary>
         [Param]
-        public DateTime? AsAtDate { get; set; }
+        public DateTimeOffset? AsAtDate { get; set; }
 
         ///<summary>
         /// Controls the search of balances at all account levels. Defaults to own.

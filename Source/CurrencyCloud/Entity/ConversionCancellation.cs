@@ -36,7 +36,7 @@ namespace CurrencyCloud.Entity
 
         public decimal? Amount { get; set; }
 
-        public DateTime? EventDateTime { get; set; }
+        public DateTimeOffset? EventDateTime { get; set; }
 
         public string EventAccountId { get; set; }
 

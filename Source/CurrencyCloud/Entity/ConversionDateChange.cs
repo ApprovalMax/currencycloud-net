@@ -8,7 +8,7 @@ namespace CurrencyCloud.Entity
         [JsonConstructor]
         public ConversionDateChange() { }
 
-        public ConversionDateChange(string id, DateTime newSettlementDate)
+        public ConversionDateChange(string id, DateTimeOffset newSettlementDate)
         {
             this.ConversionId = id;
             this.NewSettlementDate = newSettlementDate;
@@ -20,19 +20,19 @@ namespace CurrencyCloud.Entity
 
         public decimal? Amount { get; set; }
 
-        public DateTime? NewConversionDate { get; set; }
+        public DateTimeOffset? NewConversionDate { get; set; }
 
         /// <summary>
         /// New conversion settlement date
         /// </summary>
         [Param]
-        public DateTime? NewSettlementDate { get; set; }
+        public DateTimeOffset? NewSettlementDate { get; set; }
 
-        public DateTime? OldConversionDate { get; set; }
+        public DateTimeOffset? OldConversionDate { get; set; }
 
-        public DateTime? OldSettlementDate { get; set; }
+        public DateTimeOffset? OldSettlementDate { get; set; }
 
-        public DateTime? EventDateTime { get; set; }
+        public DateTimeOffset? EventDateTime { get; set; }
 
         public string ToJSON()
         {

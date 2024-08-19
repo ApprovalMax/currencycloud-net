@@ -10,11 +10,11 @@ namespace CurrencyCloud.Tests.Mock.Data
             Amount = new decimal(10000.23f),
             Currency = "GBP",
             AdditionalInformation = "GBTRD-0001",
-            ValueDate = new DateTime(2018, 01, 01),
+            ValueDate = DateTimeOffset.Parse("2018-01-01T00:00:00+00:00"),
             Sender = "FR7615589290001234567890113, CMBRFR2BARK, Debtor, FR, Centre ville",
             ReceivingAccountIban = "GB99OXPH94665099600083",
-            CreatedAt = new DateTime(2018, 01, 01, 12, 34, 56),
-            UpdatedAt = new DateTime(2018, 01, 01, 12, 34, 56)
+            CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
+            UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00")
         };
     }
 }

@@ -12,11 +12,11 @@ namespace CurrencyCloud.Entity
 
         public string Uetr { get; set; }
 
-        public DateTime? InitiationTime { get; set; }
+        public DateTimeOffset? InitiationTime { get; set; }
 
-        public DateTime? CompletionTime { get; set; }
+        public DateTimeOffset? CompletionTime { get; set; }
 
-        public DateTime? LastUpdateTime { get; set; }
+        public DateTimeOffset? LastUpdateTime { get; set; }
 
         public TransactionStatusDef TransactionStatus { get; set; }
 
@@ -110,21 +110,21 @@ namespace CurrencyCloud.Entity
             public string TrackerEventType { get; set; }
             public bool Valid { get; set; }
             public TransactionStatusDef TransactionStatus { get; set; }
-            public DateTime? FundsAvailable { get; set; }
+            public DateTimeOffset? FundsAvailable { get; set; }
             public string ForwardedToAgent { get; set; }
             public string From { get; set; }
             public string To { get; set; }
             public string Originator { get; set; }
             public SerialPartiesDef SerialParties { get; set; }
-            public DateTime? SenderAcknowledgementReceipt { get; set; }
+            public DateTimeOffset? SenderAcknowledgementReceipt { get; set; }
             public AmountDef InstructedAmount { get; set; }
             public AmountDef ConfirmedAmount { get; set; }
             public AmountDef InterbankSettlementAmount { get; set; }
-            public DateTime? InterbankSettlementDate { get; set; }
+            public DateTimeOffset? InterbankSettlementDate { get; set; }
             public AmountDef ChargeAmount { get; set; }
             public string ChargeType { get; set; }
             public ForeignExchangeDetailsDef ForeignExchangeDetails { get; set; }
-            public DateTime? LastUpdateTime { get; set; }
+            public DateTimeOffset? LastUpdateTime { get; set; }
             
             public string ToJSON()
             {

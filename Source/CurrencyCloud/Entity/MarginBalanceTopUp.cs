@@ -26,8 +26,8 @@ namespace CurrencyCloud.Entity
         /// <summary>
         /// DateTime which the transfer was completed
         /// </summary>
-        public DateTime TransferCompletedAt { get; set; }
-        
+        public DateTimeOffset TransferCompletedAt { get; set; }
+
         public string ToJSON()
         {
             var obj = new[]

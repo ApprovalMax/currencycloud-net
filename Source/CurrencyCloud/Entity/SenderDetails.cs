@@ -16,7 +16,7 @@ namespace CurrencyCloud.Entity
 
         public string AdditionalInformation { get; set; }
 
-        public DateTime? ValueDate { get; set; }
+        public DateTimeOffset? ValueDate { get; set; }
 
         public string Sender { get; set; }
 
@@ -24,9 +24,9 @@ namespace CurrencyCloud.Entity
 
         public string ReceivingAccountIban { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public string ToJSON()
         {

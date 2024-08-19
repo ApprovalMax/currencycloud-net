@@ -46,7 +46,7 @@ namespace CurrencyCloud.Entity
 
         public string Notes { get; set; }
 
-        public DateTime? EventDateTime { get; set; }
+        public DateTimeOffset? EventDateTime { get; set; }
 
         public string ToJSON()
         {

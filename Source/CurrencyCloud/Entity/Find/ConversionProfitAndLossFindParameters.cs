@@ -48,13 +48,13 @@ namespace CurrencyCloud.Entity
         /// Allows you to return profit and losses will be done from on or after a defined date/time. ISO 8601 standard
         ///</summary>
         [Param]
-        public DateTime? EventDateTimeFrom { get; set; }
+        public DateTimeOffset? EventDateTimeFrom { get; set; }
 
         ///<summary>
         /// Allows you to return profit and losses will be done from on or before a defined date/time. ISO 8601 standard
         ///</summary>
         [Param]
-        public DateTime? EventDateTimeTo { get; set; }
+        public DateTimeOffset? EventDateTimeTo { get; set; }
 
         ///<summary>
         /// Allows you to return profit and losses based on a minimum profit or loss amount

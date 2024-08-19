@@ -33,13 +33,13 @@ namespace CurrencyCloud.Entity
         ///</summary>
         public string ShortReference { get; set; }
 
-        public DateTime? SettlementDate { get; set; }
+        public DateTimeOffset? SettlementDate { get; set; }
 
         ///<summary>
         /// if nothing passed then default uses first_conversion_date
         ///</summary>
         [Param]
-        public DateTime? ConversionDate { get; set; }
+        public DateTimeOffset? ConversionDate { get; set; }
 
         ///<summary>
         /// The current status of the Conversion
@@ -107,13 +107,13 @@ namespace CurrencyCloud.Entity
 
         public string DepositStatus { get; set; }
 
-        public DateTime? DepositRequiredAt { get; set; }
+        public DateTimeOffset? DepositRequiredAt { get; set; }
 
         public List<string> PaymentIds { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         /// <summary>
         /// User-generated idempotency key. Preferably in UUIDv4 format

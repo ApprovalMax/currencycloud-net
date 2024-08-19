@@ -17,7 +17,7 @@ namespace CurrencyCloud.Entity
         }
 
         [Param]
-        public DateTime? PaymentDate { get; set; }
+        public DateTimeOffset? PaymentDate { get; set; }
 
         [Param]
         public string PaymentType { get; set; }
@@ -28,9 +28,9 @@ namespace CurrencyCloud.Entity
         [Param]
         public string BankCountry { get; set; }
 
-        public DateTime? PaymentDeliveryDate { get; set; }
+        public DateTimeOffset? PaymentDeliveryDate { get; set; }
 
-        public DateTime? PaymentCutoffTime { get; set; }
+        public DateTimeOffset? PaymentCutoffTime { get; set; }
 
         public string ToJSON()
         {
