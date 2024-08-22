@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <PackageVersion>0.0.0.100</PackageVersion>
+    <PackageId>ApprovalMax.CurrencyCloud</PackageId>
+    <AssemblyName>ApprovalMax.CurrencyCloud</AssemblyName>
+    <RootNamespace>CurrencyCloud</RootNamespace>
+    <Title>ApprovalMax.CurrencyCloud</Title>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
