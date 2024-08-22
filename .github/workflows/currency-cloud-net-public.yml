@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 30
     defaults:
       run:
-        working-directory: source
+        working-directory: ./source
     steps:
       # Environment setup
       - uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
       # Build
       - name: Build NuGet package
         run: >-
-          dotnet pack ./Source/CurrencyCloud/CurrencyCloud.csproj
+          dotnet pack ./CurrencyCloud/CurrencyCloud.csproj
           "-p:Platform=Any CPU"
           -p:RepositoryUrl=https://github.com/ApprovalMax/approvalmax-product
           -p:Company=ApprovalMax
