@@ -31,7 +31,7 @@ namespace CurrencyCloud
     /// <summary>
     /// Represents API client
     /// </summary>
-    public class Client
+    public class Client : ICurrencyCloudClient
     {
         private HttpClient httpClient;
         private Credentials credentials;
