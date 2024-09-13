@@ -6,13 +6,14 @@ using CurrencyCloud.Environment;
 using CurrencyCloud.Entity;
 using CurrencyCloud.Exception;
 using System.Threading.Tasks;
+using CurrencyCloud.Authorization;
 
 namespace CurrencyCloud.Tests
 {
     [TestFixture]
     class ClientTest
     {
-        Client client = new Client();
+        private Client client = TestHelper.GetClient(Authentication.AuthorizationOptions);
         Player player = new Player("/Mock/Http/Recordings/Client.json");
 
         Credentials credentials = Authentication.Credentials;
@@ -45,12 +46,12 @@ namespace CurrencyCloud.Tests
         public async Task Initialize()
         {
             player.Play("Initialize");
-
-            var token = await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
+            var initializeClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
+            var token = await initializeClient.InitializeAsync(Authentication.ApiServer);
 
             Assert.IsNotEmpty(token);
 
-            await client.CloseAsync();
+            await initializeClient.CloseAsync();
         }
 
         /// <summary>
@@ -60,10 +61,10 @@ namespace CurrencyCloud.Tests
         public async Task PersistToken()
         {
             player.Play("PersistToken");
-
-            await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
-            await client.GetCurrentAccountAsync();
-            await client.CloseAsync();
+            var persistTokenClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
+            await persistTokenClient.InitializeAsync(Authentication.ApiServer);
+            await persistTokenClient.GetCurrentAccountAsync();
+            await persistTokenClient.CloseAsync();
         }
 
         /// <summary>
@@ -74,16 +75,18 @@ namespace CurrencyCloud.Tests
         {
             player.Play("Reauthenticate");
 
-            await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
+            var reauthenticateClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
+
+            await reauthenticateClient.InitializeAsync(Authentication.ApiServer);
 
             var expired = "3907f05da86533710efc589d58f51f45";
-            client.Token = expired;
+            reauthenticateClient.Token = expired;
 
-            await client.GetCurrentAccountAsync();
+            await reauthenticateClient.GetCurrentAccountAsync();
 
-            Assert.AreNotEqual(expired, client.Token);
+            Assert.AreNotEqual(expired, reauthenticateClient.Token);
 
-            await client.CloseAsync();
+            await reauthenticateClient.CloseAsync();
         }
 
         /// <summary>
@@ -94,7 +97,7 @@ namespace CurrencyCloud.Tests
         {
             player.Play("Close");
 
-            await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
+            await client.InitializeAsync(Authentication.ApiServer);
             await client.CloseAsync();
 
             Assert.IsFalse(client.IsInitialized);
@@ -109,10 +112,10 @@ namespace CurrencyCloud.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
                 player.Play("FailAfterClose");
-
-                await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
-                await client.CloseAsync();
-                await client.GetCurrentAccountAsync();
+                var failAfterCloseClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
+                await failAfterCloseClient.InitializeAsync(Authentication.ApiServer);
+                await failAfterCloseClient.CloseAsync();
+                await failAfterCloseClient.GetCurrentAccountAsync();
             });
         }
 
@@ -123,11 +126,11 @@ namespace CurrencyCloud.Tests
         public async Task FailWithError()
         {
             player.Play("FailWithError");
-
+            var failWithErrorClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
             try
             {
-                await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
-                await client.GetBalanceAsync("wrong");
+                await failWithErrorClient.InitializeAsync(Authentication.ApiServer);
+                await failWithErrorClient.GetBalanceAsync("wrong");
 
                 Assert.Fail();
             }
@@ -145,7 +148,7 @@ namespace CurrencyCloud.Tests
 
                 Assert.IsNotEmpty(ex.Errors);
 
-                await client.CloseAsync();
+                await failWithErrorClient.CloseAsync();
             }
         }
         
@@ -156,11 +159,11 @@ namespace CurrencyCloud.Tests
         public async Task FailWithMalFormedError()
         {
             player.Play("FailWithMalformedError");
-
+            var failWithMalFormedErrorClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
             try
             {
-                await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
-                await client.GetBankDetailsAsync("iban", "123abc456xyz");
+                await failWithMalFormedErrorClient.InitializeAsync(Authentication.ApiServer);
+                await failWithMalFormedErrorClient.GetBankDetailsAsync("iban", "123abc456xyz");
 
                 Assert.Fail();
             }
@@ -185,7 +188,7 @@ namespace CurrencyCloud.Tests
                 Assert.AreEqual("IBAN is invalid.",ex.Errors[0].ErrorMessages[0].Message);
                 Assert.IsEmpty(ex.Errors[0].ErrorMessages[0].Params);
 
-                await client.CloseAsync();
+                await failWithMalFormedErrorClient.CloseAsync();
             }
         }
 
@@ -196,32 +199,32 @@ namespace CurrencyCloud.Tests
         public async Task RunOnbehalfof()
         {
             player.Play("RunOnbehalfof");
-
-            await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey);
+            var runOnbehalfof = TestHelper.GetClient(Authentication.AuthorizationOptions);
+            await runOnbehalfof.InitializeAsync(Authentication.ApiServer);
 
             var contactParams = Contacts.Contact1;
             var beneficiaryParams = Beneficiaries.Beneficiary1;
 
             Beneficiary beneficiary;
 
-            Account account = await client.GetCurrentAccountAsync();
+            Account account = await runOnbehalfof.GetCurrentAccountAsync();
             contactParams.AccountId = account.Id;
             if (!Authentication.ApiServer.Url.Contains("localhost"))
                 contactParams.LoginId = ContactsTest.RandomString(10);
-            Contact contact = await client.CreateContactAsync(contactParams);
-            await client.OnBehalfOf(contact.Id, async () =>
+            Contact contact = await runOnbehalfof.CreateContactAsync(contactParams);
+            await runOnbehalfof.OnBehalfOf(contact.Id, async () =>
             {
-                beneficiary = await client.CreateBeneficiaryAsync(beneficiaryParams);
+                beneficiary = await runOnbehalfof.CreateBeneficiaryAsync(beneficiaryParams);
 
                 Assert.AreEqual(contact.Id, beneficiary.CreatorContactId);
             });
 
-            contact = await client.GetCurrentContactAsync();
-            beneficiary = await client.CreateBeneficiaryAsync(beneficiaryParams);
+            contact = await runOnbehalfof.GetCurrentContactAsync();
+            beneficiary = await runOnbehalfof.CreateBeneficiaryAsync(beneficiaryParams);
 
             Assert.AreEqual(contact.Id, beneficiary.CreatorContactId);
 
-            await client.CloseAsync();
+            await runOnbehalfof.CloseAsync();
         }
 
         /// <summary>

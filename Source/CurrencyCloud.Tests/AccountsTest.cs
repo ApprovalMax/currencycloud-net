@@ -6,14 +6,16 @@ using CurrencyCloud.Tests.Mock.Http;
 using CurrencyCloud.Environment;
 using CurrencyCloud.Entity.List;
 using System.Threading.Tasks;
+using CurrencyCloud.Authorization;
 
 namespace CurrencyCloud.Tests
 {
     [TestFixture]
     class AccountsTest
     {
-        Client client = new Client();
+        private Client client = TestHelper.GetClient(Authentication.AuthorizationOptions);
         Player player = new Player("/Mock/Http/Recordings/Accounts.json");
+        Credentials credentials = new Credentials("development@currencycloud.com", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
 
         [OneTimeSetUpAttribute]
         public void SetUp()
@@ -21,9 +23,7 @@ namespace CurrencyCloud.Tests
             player.Start(ApiServer.Mock.Url);
             player.Play("SetUp");
 
-            var credentials = Authentication.Credentials;
-
-            client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey).Wait();
+            client.InitializeAsync(Authentication.ApiServer).Wait();
         }
 
         [OneTimeTearDownAttribute]

@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CurrencyCloud.Tests.Mock.Http
 {
-    class Player
+    internal class Player
     {
         private HttpListener listener;
         private Dictionary<string, Queue> recordingsSet;

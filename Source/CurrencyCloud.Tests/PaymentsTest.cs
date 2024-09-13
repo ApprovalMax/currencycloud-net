@@ -14,7 +14,7 @@ namespace CurrencyCloud.Tests
     [TestFixture]
     class PaymentsTest
     {
-        Client client = new Client();
+        private Client client = TestHelper.GetClient(Authentication.AuthorizationOptions);
         Player player = new Player("/Mock/Http/Recordings/Payments.json");
 
         private async Task<Payment> CreatePayment(Entity.Payment payment)
@@ -40,7 +40,7 @@ namespace CurrencyCloud.Tests
 
             var credentials = Authentication.Credentials;
 
-            client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey).Wait();
+            client.InitializeAsync(Authentication.ApiServer).Wait();
         }
 
         [OneTimeTearDownAttribute]

@@ -4,13 +4,14 @@ using CurrencyCloud.Tests.Mock.Http;
 using CurrencyCloud.Environment;
 using CurrencyCloud.Exception;
 using System.Threading.Tasks;
+using CurrencyCloud.Authorization;
 
 namespace CurrencyCloud.Tests
 {
     [TestFixture]
     class BackoffRetryTest
     {
-        Client client = new Client();
+        private Client client = TestHelper.GetClient(Authentication.AuthorizationOptions);
         Player player = new Player("/Mock/Http/Recordings/BackoffRetry.json");
         Credentials credentials = new Credentials("development@currencycloud.com", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
 
@@ -40,7 +41,7 @@ namespace CurrencyCloud.Tests
             player.Play("AuthenticationError");
 
             var credentials = new Credentials("nobody@nowhere.com", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
-            Assert.ThrowsAsync<AuthenticationException>(async () => await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey));
+            Assert.ThrowsAsync<AuthenticationException>(async () => await client.InitializeAsync(Authentication.ApiServer));
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace CurrencyCloud.Tests
         public void TooManyRequestsError()
         {
             player.Play("TooManyRequestsError");
-            client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey).Wait();
+            client.InitializeAsync(Authentication.ApiServer).Wait();
 
             Assert.ThrowsAsync<TooManyRequestsException>(async () => await client.GetCurrentAccountAsync());
         }
@@ -62,7 +63,7 @@ namespace CurrencyCloud.Tests
         public void InternalApplicationError()
         {
             player.Play("InternalApplicationError");
-            Assert.ThrowsAsync<InternalApplicationException>(async () => await client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey));
+            Assert.ThrowsAsync<InternalApplicationException>(async () => await client.InitializeAsync(Authentication.ApiServer));
         }
     }
 }

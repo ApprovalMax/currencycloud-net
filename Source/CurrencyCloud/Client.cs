@@ -23,6 +23,7 @@ using CurrencyCloud.Entity.Pagination;
 using CurrencyCloud.Entity.List;
 using Polly;
 using Polly.Retry;
+using CurrencyCloud.Authorization;
 
 [assembly: InternalsVisibleTo("Currencycloud.Tests")]
 
@@ -34,9 +35,16 @@ namespace CurrencyCloud
     public class Client : ICurrencyCloudClient
     {
         private HttpClient httpClient;
-        private Credentials credentials;
+        private IAuthorizationService authorizationService;
         private string onBehalfOf;
         private const string userAgent = "CurrencyCloudSDK/2.0 .NET/6.5.0";
+
+        public Client(HttpClient httpClient, IAuthorizationService authorizationService)
+        {
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            this.authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
+        }
+
 
         internal string Token
         {
@@ -53,7 +61,7 @@ namespace CurrencyCloud
 
         #region Retry
 
-        private static TimeSpan backoffWait(int attempt, int min, int max, int jitter)
+        public static TimeSpan backoffWait(int attempt, int min, int max, int jitter)
         {
             var wait = TimeSpan.FromMilliseconds(min * Math.Pow(2, attempt))
                        + TimeSpan.FromMilliseconds(new Random().Next(jitter));
@@ -67,7 +75,7 @@ namespace CurrencyCloud
             return wait.TotalMilliseconds > max ? TimeSpan.FromMilliseconds(max) : wait;
         }
 
-        private static HttpRequestMessage CloneHttpRequestMessage(HttpRequestMessage req)
+        public static HttpRequestMessage CloneHttpRequestMessage(HttpRequestMessage req)
         {
             HttpRequestMessage clone = new HttpRequestMessage(req.Method, req.RequestUri);
 
@@ -94,7 +102,7 @@ namespace CurrencyCloud
             return clone;
         }
 
-        private static AsyncPolicy<HttpResponseMessage> retryPolicy = Policy<HttpResponseMessage>
+        public static AsyncPolicy<HttpResponseMessage> retryPolicy = Policy<HttpResponseMessage>
             .Handle<HttpRequestException>()
             .OrResult(res => Retry.OnError.Contains(res.StatusCode))
             .WaitAndRetryAsync(
@@ -107,42 +115,13 @@ namespace CurrencyCloud
 
         #region Request
 
-        private async Task<string> AuthorizeAsync()
+        private async Task<string> AuthorizeAsync(bool reauthorize = false)
         {
-            string requestUri = "/v2/authenticate/api";
+            var token = await authorizationService.GetTokenAsync(reauthorize);
+            httpClient.DefaultRequestHeaders.Remove("X-Auth-Token");
+            httpClient.DefaultRequestHeaders.Add("X-Auth-Token", token);
 
-            ParamsObject authParams = new ParamsObject();
-            authParams.Add("login_id", credentials.LoginId);
-            authParams.Add("api_key", credentials.ApiKey);
-
-            HttpRequestMessage httpAuthRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
-            {
-                Content = authParams.buildFormUrlBodyFromParams()
-            };
-
-            if (Retry.Enabled)
-                Debug.WriteLine("UTC: {0} - Retrying authentication - Retries: {1}, MinWait: {2}, MaxWait: {3}, Jitter: {4}",
-                    DateTime.UtcNow, Retry.NumRetries, Retry.MinWait, Retry.MaxWait, Retry.Jitter);
-
-            HttpResponseMessage res = Retry.Enabled ?
-                await retryPolicy.ExecuteAsync(
-                    ct => httpClient.SendAsync(CloneHttpRequestMessage(httpAuthRequestMessage)), CancellationToken.None) :
-                await httpClient.SendAsync(httpAuthRequestMessage);
-
-            if (res.IsSuccessStatusCode)
-            {
-                string resString = await res.Content.ReadAsStringAsync();
-                JObject resObject = JObject.Parse(resString);
-
-                var token = resObject["auth_token"].Value<string>();
-
-                httpClient.DefaultRequestHeaders.Remove("X-Auth-Token");
-                httpClient.DefaultRequestHeaders.Add("X-Auth-Token", token);
-
-                return token;
-            }
-
-            throw await ApiExceptionFactory.FromHttpResponse(res);
+            return token;
         }
 
         private async Task<TResult> RequestAsync<TResult>(string path, HttpMethod method, ParamsObject obj = null)
@@ -150,6 +129,11 @@ namespace CurrencyCloud
             if (httpClient == null)
             {
                 throw new InvalidOperationException("Client is not initialized.");
+            }
+
+            if (!IsInitialized)
+            {
+                await AuthorizeAsync();
             }
 
             var paramsObj = new ParamsObject();
@@ -216,7 +200,7 @@ namespace CurrencyCloud
                 {
                     if (attempts > 0)
                     {
-                        await AuthorizeAsync();
+                        await AuthorizeAsync(true);
                     }
 
                     return await requestAsyncDelegate();
@@ -280,30 +264,21 @@ namespace CurrencyCloud
         /// <summary>
         /// Gets a value that indicates whether the client is initialized.
         /// </summary>
-        public bool IsInitialized
-        {
-            get
-            {
-                return httpClient != null;
-            }
-        }
+        public bool IsInitialized => httpClient != null && httpClient.DefaultRequestHeaders.Contains("X-Auth-Token");
 
         /// <summary>
         /// Initializes the client and generates authentication token for the API user.
         /// </summary>
         /// <param name="apiServer">API server to make requests against.</param>
-        /// <param name="loginId">Login id of the API user.</param>
-        /// <param name="apiKey">API key of the API user.</param>
         /// <returns>Asynchronous task, which returns the authentication token.</returns>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<string> InitializeAsync(ApiServer apiServer, string loginId, string apiKey)
+        [Obsolete("This method is deprecated. Please use Authorize Method.")]
+        public async Task<string> InitializeAsync(ApiServer apiServer)
         {
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
 
             httpClient.BaseAddress = new Uri(apiServer.Url);
-
-            credentials = new Credentials(loginId,apiKey);
 
             return await AuthorizeAsync();
         }
@@ -324,8 +299,6 @@ namespace CurrencyCloud
             HttpResponseMessage res = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/v2/authenticate/close_session"));
             if (res.IsSuccessStatusCode)
             {
-                credentials = null;
-
                 httpClient.Dispose();
                 httpClient = null;
             }
