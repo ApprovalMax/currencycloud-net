@@ -78,6 +78,11 @@ namespace CurrencyCloud.Entity
         public string Action { get; set; }
         
         /// <summary>
+        /// Allows you to trigger approval or rejection behaviour
+        /// </summary>
+        public string ShortReference { get; set; }
+        
+        /// <summary>
         /// The date-time the SSI was added to the account
         /// </summary>
         public DateTimeOffset? CreatedAt { get; set; }
@@ -108,6 +113,7 @@ namespace CurrencyCloud.Entity
                     Amount,
                     Currency,
                     Action,
+                    ShortReference,
                     CreatedAt,
                     UpdatedAt
                 }
@@ -138,6 +144,7 @@ namespace CurrencyCloud.Entity
                    Amount == account.Amount &&
                    Currency == account.Currency &&
                    Action == account.Action &&
+                   ShortReference == account.ShortReference &&
                    CreatedAt == account.CreatedAt &&
                    UpdatedAt == account.UpdatedAt;
         }
