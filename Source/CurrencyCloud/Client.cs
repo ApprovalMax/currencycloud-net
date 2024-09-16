@@ -837,6 +837,21 @@ namespace CurrencyCloud
             return await RequestAsync<PaginatedFundingAccounts>("/v2/funding_accounts/find", HttpMethod.Get, optional);
         }
         
+        /// <summary>
+        /// Triggers a production-like flow for processing funds, topping up CM balance or rejecting the
+        /// transaction without topping up CM balance
+        /// </summary>
+        /// <param name="addFunds">Add funds parameters</param>
+        /// <returns>Asynchronous task, which returns the add demo funds.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<AddedFunds> AddDemoFundsAsync(AddFundsParameters addFunds = null)
+        {
+            ParamsObject paramsObj = ParamsObject.CreateFromStaticObject(addFunds);
+
+            return await RequestAsync<AddedFunds>("/v2/demo/funding/create", HttpMethod.Post, paramsObj);
+        }
+        
         #endregion
         
         #region Ibans

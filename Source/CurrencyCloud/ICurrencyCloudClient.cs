@@ -337,6 +337,17 @@ public interface ICurrencyCloudClient
     Task<PaginatedFundingAccounts> FindFundingAccountsAsync(FundingAccountFindParameters parameters = null);
 
     /// <summary>
+    /// Triggers a production-like flow for processing funds, topping up CM balance or rejecting the transaction without 
+    /// topping up CM balance. This resource is only available in the CurrencyCloud Demo environment;
+    /// it is not implemented in the Production environment
+    /// </summary>
+    /// <param name="parameters">Find parameters</param>
+    /// <returns>Asynchronous task, which returns the add demo funds.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<AddedFunds> AddDemoFundsAsync(AddFundsParameters parameters = null);
+    
+    /// <summary>
     /// Find IBANs assigned to the logged in account.
     /// </summary>
     /// <param name="parameters">Find parameters</param>
