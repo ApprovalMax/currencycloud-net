@@ -1,67 +1,72 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Net;
+using CurrencyCloud.Environment;
 
-namespace CurrencyCloud.Authorization;
-public class AuthorizationService : IAuthorizationService
-
+namespace CurrencyCloud.Authorization
 {
-    private readonly HttpClient httpClient;
-    private readonly TokenState tokenState;
-    private readonly AuthorizationOptions authorizationOptions;
-
-    public AuthorizationService(HttpClient httpClient, AuthorizationOptions authorizationOptions, TokenState tokenState)
+    public class AuthorizationService : IAuthorizationService
     {
-        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        this.tokenState = tokenState ?? throw new ArgumentNullException(nameof(tokenState));
-        this.authorizationOptions = authorizationOptions ?? throw new ArgumentNullException(nameof(authorizationOptions));
-    }
+        private readonly HttpClient httpClient;
+        private string token { get; set; }
+        private DateTime lastTokenRefresh { get; set; }
+        private SemaphoreSlim semaphore { get; } = new(1, 1);
 
-    private bool IsTokenInvalid => tokenState.Token == null || authorizationOptions.TokenInactivityTimeoutInMinutes <= DateTime.UtcNow - tokenState.LastTokenRefresh;
+        private readonly AuthorizationOptions authorizationOptions;
 
-    public async Task<string> GetTokenAsync(bool reauthorize)
-    {
-        if (!(reauthorize || IsTokenInvalid)) return tokenState.Token;
-
-        await tokenState.Semaphore.WaitAsync();
-
-        try
+        public AuthorizationService(IHttpClientFactory httpClientFactory, AuthorizationOptions authorizationOptions)
         {
-            if (reauthorize || IsTokenInvalid)
+            this.httpClient = httpClientFactory.CreateClient(nameof(AuthorizationService));
+            httpClient.DefaultRequestHeaders.Add("User-Agent", Constants.UserAgent);
+            this.authorizationOptions =
+                authorizationOptions ?? throw new ArgumentNullException(nameof(authorizationOptions));
+        }
+
+        private bool IsTokenInvalid => this.token == null ||
+                                       authorizationOptions.TokenInactivityTimeout <=
+                                       DateTime.UtcNow - this.lastTokenRefresh;
+
+        public async Task<string> GetTokenAsync(bool reauthorize)
+        {
+            if (!(reauthorize || IsTokenInvalid)) return this.token;
+
+            await this.semaphore.WaitAsync();
+
+            try
             {
-                tokenState.Token = await AuthorizeAsync();
-                tokenState.LastTokenRefresh = DateTime.UtcNow;
+                if (reauthorize || IsTokenInvalid)
+                {
+                    this.token = await AuthorizeAsync();
+                    this.lastTokenRefresh = DateTime.UtcNow;
+                }
             }
+            finally
+            {
+                this.semaphore.Release();
+            }
+
+            return this.token;
         }
-        finally
+
+        private async Task<string> AuthorizeAsync()
         {
-            tokenState.Semaphore.Release();
+            const string requestUri = "/v2/authenticate/api";
+            var authParams = new ParamsObject();
+            authParams.Add("login_id", authorizationOptions.Credentials.LoginId);
+            authParams.Add("api_key", authorizationOptions.Credentials.ApiKey);
+
+            using var httpAuthRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
+            httpAuthRequestMessage.Content = authParams.buildFormUrlBodyFromParams();
+
+            var response = await httpClient.SendAsync(httpAuthRequestMessage);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw await ApiExceptionFactory.FromHttpResponse(response);
+            }
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var responseObject = JObject.Parse(responseString);
+            return responseObject["auth_token"]?.Value<string>()
+                   ?? throw await ApiExceptionFactory.FromHttpResponse(response);
         }
-
-        return tokenState.Token;
-    }
-
-    private async Task<string> AuthorizeAsync()
-    {
-        const string requestUri = "/v2/authenticate/api";
-        var authParams = new ParamsObject();
-        authParams.Add("login_id", authorizationOptions.Credentials.LoginId);
-        authParams.Add("api_key", authorizationOptions.Credentials.ApiKey);
-
-        using var httpAuthRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
-        httpAuthRequestMessage.Content = authParams.buildFormUrlBodyFromParams();
-
-        var response = await httpClient.SendAsync(httpAuthRequestMessage);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw await ApiExceptionFactory.FromHttpResponse(response);
-        }
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseObject = JObject.Parse(responseString);
-        return responseObject["auth_token"]?.Value<string>()
-                    ?? throw await ApiExceptionFactory.FromHttpResponse(response);
     }
 }

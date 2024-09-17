@@ -16,18 +16,64 @@ namespace CurrencyCloud.Tests
     {
         public static Client GetClient(AuthorizationOptions authorizationOptions)
         {
-            var authorizationServiceHttpClient = new HttpClient();
             string userAgent = "CurrencyCloudSDK/2.0 .NET/6.5.0";
-            authorizationServiceHttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
-            authorizationServiceHttpClient.BaseAddress = new Uri(Authentication.ApiServer.Url);
 
-            var authorizationService = new AuthorizationService(authorizationServiceHttpClient, authorizationOptions, new TokenState());
+            var httpClientFactory = CreateHttpClientFactory(userAgent, Authentication.ApiServer.Url);
 
-            var clientHttpClient = new HttpClient();
-            clientHttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
-            clientHttpClient.BaseAddress = new Uri(Authentication.ApiServer.Url);
+            var authorizationServiceHttpClient = httpClientFactory.CreateClient(nameof(AuthorizationService));
+
+            var clientHttpClient = httpClientFactory.CreateClient(nameof(Client));
+
+            var authorizationService =
+                new AuthorizationService(httpClientFactory, authorizationOptions);
 
             return new Client(clientHttpClient, authorizationService);
+        }
+
+        private static IHttpClientFactory CreateHttpClientFactory(string userAgent, string baseUrl)
+        {
+            var handler = new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(5)
+            };
+
+            var authorizationServiceHttpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(baseUrl)
+            };
+            authorizationServiceHttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
+
+            var clientHttpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(baseUrl)
+            };
+            clientHttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
+
+            return new TestHttpClientFactory(new Dictionary<string, HttpClient>
+            {
+                { nameof(AuthorizationService), authorizationServiceHttpClient },
+                { nameof(Client), clientHttpClient }
+            });
+        }
+    }
+
+    public class TestHttpClientFactory : IHttpClientFactory
+    {
+        private readonly Dictionary<string, HttpClient> clients;
+
+        public TestHttpClientFactory(Dictionary<string, HttpClient> clients)
+        {
+            this.clients = clients ?? throw new ArgumentNullException(nameof(clients));
+        }
+
+        public HttpClient CreateClient(string name)
+        {
+            if (clients.ContainsKey(name))
+            {
+                return clients[name];
+            }
+
+            throw new InvalidOperationException($"HttpClient for {name} not configured.");
         }
     }
 }

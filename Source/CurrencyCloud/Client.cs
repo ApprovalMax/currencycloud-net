@@ -37,11 +37,11 @@ namespace CurrencyCloud
         private HttpClient httpClient;
         private IAuthorizationService authorizationService;
         private string onBehalfOf;
-        private const string userAgent = "CurrencyCloudSDK/2.0 .NET/6.5.0";
 
         public Client(HttpClient httpClient, IAuthorizationService authorizationService)
         {
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            httpClient.DefaultRequestHeaders.Add("User-Agent", Constants.UserAgent);
             this.authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
         }
 
@@ -198,7 +198,11 @@ namespace CurrencyCloud
             {
                 try
                 {
-                    if (attempts > 0)
+                    if (attempts == 1)
+                    {
+                        await AuthorizeAsync();
+                    }
+                    else if (attempts > 1)
                     {
                         await AuthorizeAsync(true);
                     }
@@ -264,7 +268,7 @@ namespace CurrencyCloud
         /// <summary>
         /// Gets a value that indicates whether the client is initialized.
         /// </summary>
-        public bool IsInitialized => httpClient != null && httpClient.DefaultRequestHeaders.Contains("X-Auth-Token");
+        public bool IsInitialized => httpClient.DefaultRequestHeaders.Contains("X-Auth-Token");
 
         /// <summary>
         /// Initializes the client and generates authentication token for the API user.
@@ -276,7 +280,7 @@ namespace CurrencyCloud
         public async Task<string> InitializeAsync(ApiServer apiServer)
         {
             httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
+            httpClient.DefaultRequestHeaders.Add("User-Agent", Constants.UserAgent);
 
             httpClient.BaseAddress = new Uri(apiServer.Url);
 
@@ -836,7 +840,7 @@ namespace CurrencyCloud
 
             return await RequestAsync<PaginatedFundingAccounts>("/v2/funding_accounts/find", HttpMethod.Get, optional);
         }
-        
+
         /// <summary>
         /// Triggers a production-like flow for processing funds, topping up CM balance or rejecting the
         /// transaction without topping up CM balance
@@ -851,7 +855,7 @@ namespace CurrencyCloud
 
             return await RequestAsync<AddedFunds>("/v2/demo/funding/create", HttpMethod.Post, paramsObj);
         }
-        
+
         #endregion
         
         #region Ibans

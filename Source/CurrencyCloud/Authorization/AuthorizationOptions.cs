@@ -3,13 +3,13 @@
 
     public class AuthorizationOptions
     {
-        public AuthorizationOptions(Credentials credentials, int tokenInactivityTimeoutInMinutes)
+        public AuthorizationOptions(Credentials credentials, TimeSpan tokenInactivityTimeout)
         {
             Credentials = credentials;
-            TokenInactivityTimeoutInMinutes = TimeSpan.FromMinutes(tokenInactivityTimeoutInMinutes);
+            TokenInactivityTimeout = tokenInactivityTimeout;
         }
 
         public Credentials Credentials { get; }
-        public TimeSpan TokenInactivityTimeoutInMinutes { get; }
+        public TimeSpan TokenInactivityTimeout { get; }
     }
 }

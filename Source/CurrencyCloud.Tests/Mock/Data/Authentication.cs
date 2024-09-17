@@ -1,4 +1,5 @@
-﻿using CurrencyCloud.Authorization;
+﻿using System;
+using CurrencyCloud.Authorization;
 using CurrencyCloud.Environment;
 using System.Net;
 
@@ -13,6 +14,6 @@ namespace CurrencyCloud.Tests.Mock.Data
 
         public static readonly ApiServer ApiServer = ApiServer.Mock;
 
-        public static readonly AuthorizationOptions AuthorizationOptions = new(Credentials, 30);
+        public static readonly AuthorizationOptions AuthorizationOptions = new(Credentials, TimeSpan.FromMinutes(30));
     }
 }
