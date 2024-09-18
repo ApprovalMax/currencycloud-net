@@ -1,14 +1,9 @@
 ﻿using CurrencyCloud.Authorization;
-using CurrencyCloud.Environment;
 using CurrencyCloud.Tests.Mock.Data;
-using CurrencyCloud.Tests.Mock.Http;
-using NUnit.Framework;
-using System;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace CurrencyCloud.Tests
 {
@@ -20,14 +15,12 @@ namespace CurrencyCloud.Tests
 
             var httpClientFactory = CreateHttpClientFactory(userAgent, Authentication.ApiServer.Url);
 
-            var authorizationServiceHttpClient = httpClientFactory.CreateClient(nameof(AuthorizationService));
-
-            var clientHttpClient = httpClientFactory.CreateClient(nameof(Client));
+            var logger = NullLogger<AuthorizationService>.Instance;
 
             var authorizationService =
-                new AuthorizationService(httpClientFactory, authorizationOptions);
+                new AuthorizationService(httpClientFactory, authorizationOptions, logger);
 
-            return new Client(clientHttpClient, authorizationService);
+            return new Client(httpClientFactory, authorizationService);
         }
 
         private static IHttpClientFactory CreateHttpClientFactory(string userAgent, string baseUrl)
@@ -41,13 +34,11 @@ namespace CurrencyCloud.Tests
             {
                 BaseAddress = new Uri(baseUrl)
             };
-            authorizationServiceHttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
 
             var clientHttpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri(baseUrl)
             };
-            clientHttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
 
             return new TestHttpClientFactory(new Dictionary<string, HttpClient>
             {

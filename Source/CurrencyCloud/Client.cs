@@ -38,20 +38,16 @@ namespace CurrencyCloud
         private IAuthorizationService authorizationService;
         private string onBehalfOf;
 
-        public Client(HttpClient httpClient, IAuthorizationService authorizationService)
+        public Client(IHttpClientFactory httpClientFactory, IAuthorizationService authorizationService)
         {
-            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            this.httpClient = httpClientFactory.CreateClient(nameof(Client));
             httpClient.DefaultRequestHeaders.Add("User-Agent", Constants.UserAgent);
             this.authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
         }
 
-
         internal string Token
         {
-            get
-            {
-                return httpClient.DefaultRequestHeaders.GetValues("X-Auth-Token").FirstOrDefault();
-            }
+            get { return httpClient.DefaultRequestHeaders.GetValues("X-Auth-Token").FirstOrDefault(); }
             set
             {
                 httpClient.DefaultRequestHeaders.Remove("X-Auth-Token");
@@ -207,6 +203,7 @@ namespace CurrencyCloud
                         await AuthorizeAsync(true);
                     }
 
+
                     return await requestAsyncDelegate();
                 }
                 catch (AuthenticationException)
@@ -293,6 +290,7 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        [Obsolete("This method is deprecated. Please use Authorize Method.")]
         public async Task CloseAsync()
         {
             if (httpClient == null)

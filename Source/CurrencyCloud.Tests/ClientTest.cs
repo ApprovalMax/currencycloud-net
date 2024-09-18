@@ -34,6 +34,8 @@ namespace CurrencyCloud.Tests
         /// Fails to make an API call before logging in.
         /// </summary>
         [Test]
+        [Ignore(
+            "Does not fail anymore according to our logic, it should authorize instead, it is tested in other tests")]
         public void FailBeforeInitialize()
         {
             Assert.ThrowsAsync<InvalidOperationException>(async () => await client.GetCurrentAccountAsync());
@@ -85,14 +87,13 @@ namespace CurrencyCloud.Tests
             await reauthenticateClient.GetCurrentAccountAsync();
 
             Assert.AreNotEqual(expired, reauthenticateClient.Token);
-
-            await reauthenticateClient.CloseAsync();
         }
 
         /// <summary>
         /// Successfully logs out.
         /// </summary>
         [Test]
+        [Ignore("Method is deprecated")]
         public async Task Close()
         {
             player.Play("Close");
@@ -129,7 +130,6 @@ namespace CurrencyCloud.Tests
             var failWithErrorClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
             try
             {
-                await failWithErrorClient.InitializeAsync(Authentication.ApiServer);
                 await failWithErrorClient.GetBalanceAsync("wrong");
 
                 Assert.Fail();
@@ -162,7 +162,6 @@ namespace CurrencyCloud.Tests
             var failWithMalFormedErrorClient = TestHelper.GetClient(Authentication.AuthorizationOptions);
             try
             {
-                await failWithMalFormedErrorClient.InitializeAsync(Authentication.ApiServer);
                 await failWithMalFormedErrorClient.GetBankDetailsAsync("iban", "123abc456xyz");
 
                 Assert.Fail();
@@ -200,7 +199,6 @@ namespace CurrencyCloud.Tests
         {
             player.Play("RunOnbehalfof");
             var runOnbehalfof = TestHelper.GetClient(Authentication.AuthorizationOptions);
-            await runOnbehalfof.InitializeAsync(Authentication.ApiServer);
 
             var contactParams = Contacts.Contact1;
             var beneficiaryParams = Beneficiaries.Beneficiary1;
