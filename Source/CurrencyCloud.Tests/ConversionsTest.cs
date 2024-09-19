@@ -12,7 +12,7 @@ namespace CurrencyCloud.Tests
     [TestFixture]
     class ConversionsTest
     {
-        Client client = new Client();
+        private Client client = TestHelper.GetClient(Authentication.AuthorizationOptions);
         Player player = new Player("/Mock/Http/Recordings/Conversions.json");
 
         [OneTimeSetUpAttribute]
@@ -23,7 +23,7 @@ namespace CurrencyCloud.Tests
 
             var credentials = Authentication.Credentials;
 
-            client.InitializeAsync(Authentication.ApiServer, credentials.LoginId, credentials.ApiKey).Wait();
+            client.InitializeAsync(Authentication.ApiServer).Wait();
         }
 
         [OneTimeTearDownAttribute]

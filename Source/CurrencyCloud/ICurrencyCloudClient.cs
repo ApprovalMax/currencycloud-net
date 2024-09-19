@@ -26,11 +26,10 @@ public interface ICurrencyCloudClient
     /// Initializes the client and generates authentication token for the API user.
     /// </summary>
     /// <param name="apiServer">API server to make requests against.</param>
-    /// <param name="loginId">Login id of the API user.</param>
-    /// <param name="apiKey">API key of the API user.</param>
     /// <returns>Asynchronous task, which returns the authentication token.</returns>
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
-    Task<string> InitializeAsync(ApiServer apiServer, string loginId, string apiKey);
+    [Obsolete("This method is deprecated. Please use Authorize Method.")]
+    Task<string> InitializeAsync(ApiServer apiServer);
 
     /// <summary>
     /// Closes current session and resets the client.

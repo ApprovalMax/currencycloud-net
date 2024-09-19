@@ -1,6 +1,6 @@
-﻿namespace CurrencyCloud
+﻿namespace CurrencyCloud.Authorization
 {
-    class Credentials
+    public class Credentials
     {
         public Credentials(string loginId, string apiKey)
         {
