@@ -1,6 +1,5 @@
 ﻿namespace CurrencyCloud.Authorization
 {
-
     public class AuthorizationOptions
     {
         public AuthorizationOptions(Credentials credentials, TimeSpan tokenInactivityTimeout)

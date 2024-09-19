@@ -200,7 +200,7 @@ namespace CurrencyCloud
                     }
                     else if (attempts > 1)
                     {
-                        await AuthorizeAsync(true);
+                        await AuthorizeAsync(reauthorize: true);
                     }
 
 
