@@ -346,7 +346,91 @@ public interface ICurrencyCloudClient
     /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
     Task<AddedFunds> AddDemoFundsAsync(AddFundsParameters parameters = null);
-    
+
+    /// <summary>
+    /// Gets a list of countries.
+    /// </summary>
+    /// <returns>Asynchronous task, which returns a list of countries.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> GetCountriesAsync();
+
+    /// <summary>
+    /// Gets document types for a specific country.
+    /// </summary>
+    /// <param name="countryCode">Country code</param>
+    /// <returns>Asynchronous task, which returns a list of document types.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> GetDocumentTypesAsync(string countryCode);
+
+    /// <summary>
+    /// Gets a list of supported currencies.
+    /// </summary>
+    /// <returns>Asynchronous task, which returns a list of supported currencies.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> GetSupportedCurrenciesAsync();
+
+    /// <summary>
+    /// Gets details of a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <returns>Asynchronous task, which returns the requested form.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> GetFormAsync(string formId);
+
+    /// <summary>
+    /// Creates a new form.
+    /// </summary>
+    /// <param name="form">Form object</param>
+    /// <returns>Asynchronous task, which returns the newly created form.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> CreateFormAsync(string form);
+
+    /// <summary>
+    /// Submits a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <returns>Asynchronous task, which returns the form submission result.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> SubmitFormAsync(string formId);
+
+    /// <summary>
+    /// Adds a person to a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="person">Person object</param>
+    /// <returns>Asynchronous task, which returns the added person.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> AddPersonToFormAsync(string formId, string person);
+
+    /// <summary>
+    /// Adds a document to a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="document">Document object</param>
+    /// <returns>Asynchronous task, which returns the added document.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> AddDocumentToFormAsync(string formId, string document);
+
+    /// <summary>
+    /// Adds a document image to a document.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="documentId">Document ID</param>
+    /// <param name="documentImage">Document image object</param>
+    /// <returns>Asynchronous task, which returns the added document image.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<string> AddDocumentImageAsync(string formId, string documentId, string documentImage);
+
+
     /// <summary>
     /// Find IBANs assigned to the logged in account.
     /// </summary>

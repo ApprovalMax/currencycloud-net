@@ -855,7 +855,127 @@ namespace CurrencyCloud
         }
 
         #endregion
-        
+
+        #region Onboarding
+
+        /// <summary>
+        /// Gets a list of countries.
+        /// </summary>
+        /// <returns>Asynchronous task, which returns a list of countries.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> GetCountriesAsync() //CountriesList
+        {
+            return await RequestAsync<string>("/v1/countries", HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Gets document types for a specific country.
+        /// </summary>
+        /// <param name="countryCode">Country code</param>
+        /// <returns>Asynchronous task, which returns a list of document types.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> GetDocumentTypesAsync(string countryCode) //DocumentTypesList
+        {
+            return await RequestAsync<string>($"/v1/countries/{countryCode}/document_types", HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Gets a list of supported currencies.
+        /// </summary>
+        /// <returns>Asynchronous task, which returns a list of supported currencies.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> GetSupportedCurrenciesAsync() //SupportedCurrenciesList
+        {
+            return await RequestAsync<string>("/v1/currencies/supported", HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Gets details of a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <returns>Asynchronous task, which returns the requested form.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> GetFormAsync(string formId) //Form
+        {
+            return await RequestAsync<string>($"/v1/forms/{formId}", HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Creates a new form.
+        /// </summary>
+        /// <param name="form">Form object</param>
+        /// <returns>Asynchronous task, which returns the newly created form.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> CreateFormAsync(string form) //Form
+        {
+            var paramsObj = ParamsObject.CreateFromStaticObject(form);
+            return await RequestAsync<string>("/v1/forms", HttpMethod.Post, paramsObj);
+        }
+
+        /// <summary>
+        /// Submits a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <returns>Asynchronous task, which returns the form submission result.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> SubmitFormAsync(string formId) //FormSubmission
+        {
+            return await RequestAsync<string>($"/v1/forms/{formId}/submit", HttpMethod.Post);
+        }
+
+        /// <summary>
+        /// Adds a person to a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="person">Person object</param>
+        /// <returns>Asynchronous task, which returns the added person.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> AddPersonToFormAsync(string formId, string person) //Person
+        {
+            var paramsObj = ParamsObject.CreateFromStaticObject(person);
+            return await RequestAsync<string>($"/v1/forms/{formId}/people", HttpMethod.Post, paramsObj);
+        }
+
+        /// <summary>
+        /// Adds a document to a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="document">Document object</param>
+        /// <returns>Asynchronous task, which returns the added document.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> AddDocumentToFormAsync(string formId, string document) //Document
+        {
+            var paramsObj = ParamsObject.CreateFromStaticObject(document);
+            return await RequestAsync<string>($"/v1/forms/{formId}/documents", HttpMethod.Post, paramsObj);
+        }
+
+        /// <summary>
+        /// Adds a document image to a document.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="documentId">Document ID</param>
+        /// <param name="documentImage">Document image object</param>
+        /// <returns>Asynchronous task, which returns the added document image.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<string> AddDocumentImageAsync(string formId, string documentId,
+            string documentImage) //DocumentImage
+        {
+            var paramsObj = ParamsObject.CreateFromStaticObject(documentImage);
+            return await RequestAsync<string>($"/v1/forms/{formId}/documents/{documentId}/document_images",
+                HttpMethod.Post, paramsObj);
+        }
+
+        #endregion
+
         #region Ibans
 
         /// <summary>
