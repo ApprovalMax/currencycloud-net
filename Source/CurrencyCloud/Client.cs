@@ -866,7 +866,7 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<string> GetCountriesAsync() //CountriesList
         {
-            return await RequestAsync<string>("/v1/countries", HttpMethod.Get);
+            return await RequestAsync<string>("/onboarding/v1/countries", HttpMethod.Get);
         }
 
         /// <summary>
@@ -878,7 +878,7 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<string> GetDocumentTypesAsync(string countryCode) //DocumentTypesList
         {
-            return await RequestAsync<string>($"/v1/countries/{countryCode}/document_types", HttpMethod.Get);
+            return await RequestAsync<string>($"/onboarding/v1/countries/{countryCode}/document_types", HttpMethod.Get);
         }
 
         /// <summary>
@@ -889,7 +889,7 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<string> GetSupportedCurrenciesAsync() //SupportedCurrenciesList
         {
-            return await RequestAsync<string>("/v1/currencies/supported", HttpMethod.Get);
+            return await RequestAsync<string>("/onboarding/v1/currencies/supported", HttpMethod.Get);
         }
 
         /// <summary>
@@ -901,7 +901,7 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<string> GetFormAsync(string formId) //Form
         {
-            return await RequestAsync<string>($"/v1/forms/{formId}", HttpMethod.Get);
+            return await RequestAsync<string>($"/onboarding/v1/forms/{formId}", HttpMethod.Get);
         }
 
         /// <summary>
@@ -914,7 +914,7 @@ namespace CurrencyCloud
         public async Task<string> CreateFormAsync(string form) //Form
         {
             var paramsObj = ParamsObject.CreateFromStaticObject(form);
-            return await RequestAsync<string>("/v1/forms", HttpMethod.Post, paramsObj);
+            return await RequestAsync<string>("/onboarding/v1/forms", HttpMethod.Post, paramsObj);
         }
 
         /// <summary>
@@ -926,7 +926,7 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<string> SubmitFormAsync(string formId) //FormSubmission
         {
-            return await RequestAsync<string>($"/v1/forms/{formId}/submit", HttpMethod.Post);
+            return await RequestAsync<string>($"/onboarding/v1/forms/{formId}/submit", HttpMethod.Post);
         }
 
         /// <summary>
@@ -940,7 +940,7 @@ namespace CurrencyCloud
         public async Task<string> AddPersonToFormAsync(string formId, string person) //Person
         {
             var paramsObj = ParamsObject.CreateFromStaticObject(person);
-            return await RequestAsync<string>($"/v1/forms/{formId}/people", HttpMethod.Post, paramsObj);
+            return await RequestAsync<string>($"/onboarding/v1/forms/{formId}/people", HttpMethod.Post, paramsObj);
         }
 
         /// <summary>
@@ -954,7 +954,7 @@ namespace CurrencyCloud
         public async Task<string> AddDocumentToFormAsync(string formId, string document) //Document
         {
             var paramsObj = ParamsObject.CreateFromStaticObject(document);
-            return await RequestAsync<string>($"/v1/forms/{formId}/documents", HttpMethod.Post, paramsObj);
+            return await RequestAsync<string>($"/onboarding/v1/forms/{formId}/documents", HttpMethod.Post, paramsObj);
         }
 
         /// <summary>
@@ -970,7 +970,7 @@ namespace CurrencyCloud
             string documentImage) //DocumentImage
         {
             var paramsObj = ParamsObject.CreateFromStaticObject(documentImage);
-            return await RequestAsync<string>($"/v1/forms/{formId}/documents/{documentId}/document_images",
+            return await RequestAsync<string>($"/onboarding/v1/forms/{formId}/documents/{documentId}/document_images",
                 HttpMethod.Post, paramsObj);
         }
 
