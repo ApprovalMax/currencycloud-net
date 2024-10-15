@@ -1,4 +1,6 @@
-﻿namespace CurrencyCloud.Authorization;
+﻿using System.Threading.Tasks;
+
+namespace CurrencyCloud.Authorization;
 
 public interface IAuthorizationService
 {

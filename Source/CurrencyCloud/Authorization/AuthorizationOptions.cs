@@ -1,4 +1,6 @@
-﻿namespace CurrencyCloud.Authorization
+﻿using System;
+
+namespace CurrencyCloud.Authorization
 {
     public class AuthorizationOptions
     {

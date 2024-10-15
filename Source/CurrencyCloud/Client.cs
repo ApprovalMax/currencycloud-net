@@ -22,8 +22,8 @@ using CurrencyCloud.Environment;
 using CurrencyCloud.Entity.Pagination;
 using CurrencyCloud.Entity.List;
 using Polly;
-using Polly.Retry;
 using CurrencyCloud.Authorization;
+using CurrencyCloud.Entity.Onboarding;
 
 [assembly: InternalsVisibleTo("Currencycloud.Tests")]
 
@@ -35,8 +35,13 @@ namespace CurrencyCloud
     public class Client : ICurrencyCloudClient
     {
         private HttpClient httpClient;
-        private IAuthorizationService authorizationService;
+        private readonly IAuthorizationService authorizationService;
         private string onBehalfOf;
+        private static readonly JsonSerializerSettings JsonSerializerOptions = new()
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new PascalContractResolver()
+        };
 
         public Client(IHttpClientFactory httpClientFactory, IAuthorizationService authorizationService)
         {
@@ -111,6 +116,57 @@ namespace CurrencyCloud
 
         #region Request
 
+        private async Task<TResult> OnboardingRequestAsync<TResult>(string path, HttpMethod method)
+        {
+            // HACK: CurrencyCloud api requires not null content for POST requests
+            var message = method == HttpMethod.Get
+                ? new HttpRequestMessage(method, path)
+                : new HttpRequestMessage(method, path)
+                {
+                    Content = new StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json")
+                };
+            
+            return await RequestAsync<TResult>(message);
+        }
+        
+        private async Task<TResult> OnboardingRequestAsync<TResult, TRequest>(string path, HttpMethod method, TRequest request)
+        {
+            var message = method == HttpMethod.Get
+                ? new HttpRequestMessage(method, path)
+                : new HttpRequestMessage(method, path)
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(request, JsonSerializerOptions), System.Text.Encoding.UTF8, "application/json")
+                };
+            
+            return await RequestAsync<TResult>(message);
+        }
+
+        private async Task<TResult> RequestAsync<TResult>(string path, HttpMethod method, ParamsObject obj = null)
+        {
+            var paramsObj = new ParamsObject();
+            if(obj != null)
+            {
+                paramsObj += obj;
+            }
+
+            paramsObj.AddNotNull("OnBehalfOf", onBehalfOf);
+
+            var requestUri = path;
+            if (paramsObj.Count > 0)
+            {
+                requestUri += "?" + paramsObj.ToQueryString();
+            }
+
+            var httpRequestMessage = method == HttpMethod.Get
+                ? new HttpRequestMessage(method, requestUri)
+                : new HttpRequestMessage(method, path)
+                {
+                    Content = paramsObj.buildFormUrlBodyFromParams()
+                };
+
+            return await RequestAsync<TResult>(httpRequestMessage);
+        }
+
         private async Task<string> AuthorizeAsync(bool reauthorize = false)
         {
             var token = await authorizationService.GetTokenAsync(reauthorize);
@@ -120,7 +176,7 @@ namespace CurrencyCloud
             return token;
         }
 
-        private async Task<TResult> RequestAsync<TResult>(string path, HttpMethod method, ParamsObject obj = null)
+        private async Task<TResult> RequestAsync<TResult>(HttpRequestMessage httpRequestMessage)
         {
             if (httpClient == null)
             {
@@ -132,37 +188,14 @@ namespace CurrencyCloud
                 await AuthorizeAsync();
             }
 
-            var paramsObj = new ParamsObject();
-            if(obj != null)
-            {
-                paramsObj += obj;
-            }
-
-            paramsObj.AddNotNull("OnBehalfOf", onBehalfOf);
-
-            string requestUri = path;
-            if (paramsObj.Count > 0)
-            {
-                requestUri += "?" + paramsObj.ToQueryString();
-            }
-
             Func<Task<TResult>> requestAsyncDelegate = async () =>
             {
-                Debug.WriteLine("UTC: {0} - HTTP {1} Request - {2}{3}?{4}",
-                    DateTime.UtcNow, method.Method, httpClient.BaseAddress.ToString().TrimEnd('/'), path, paramsObj.ToQueryString());
-
-                HttpRequestMessage httpRequestMessage = null;
-                if (method == HttpMethod.Get)
-                {
-                    httpRequestMessage = new HttpRequestMessage(method, requestUri);
-                }
-                else
-                {
-                    httpRequestMessage = new HttpRequestMessage(method, path)
-                    {
-                        Content = paramsObj.buildFormUrlBodyFromParams()
-                    };
-                }
+                Debug.WriteLine(
+                    "UTC: {0} - HTTP {1} Request - {2} Content - {3}",
+                    DateTime.UtcNow,
+                    httpRequestMessage.Method,
+                    httpRequestMessage.RequestUri,
+                    httpRequestMessage.Content?.ReadAsStringAsync().Result);
 
                 if (Retry.Enabled)
                     Debug.WriteLine("UTC: {0} - Retrying request - Retries: {1}, MinWait: {2}, MaxWait: {3}, Jitter: {4}]",
@@ -178,13 +211,7 @@ namespace CurrencyCloud
                     string resString = await res.Content.ReadAsStringAsync();
                     Debug.WriteLine("UTC: {0} - HTTP Response: {1}", DateTime.UtcNow, resString);
 
-                    var serializerSettings = new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ContractResolver = new PascalContractResolver()
-                    };
-
-                    return JsonConvert.DeserializeObject<TResult>(resString, serializerSettings);
+                    return JsonConvert.DeserializeObject<TResult>(resString, JsonSerializerOptions);
                 }
 
                 throw await ApiExceptionFactory.FromHttpResponse(res);
@@ -214,11 +241,6 @@ namespace CurrencyCloud
                     }
                 }
             }
-        }
-
-        private Task RequestAsync(string path, HttpMethod method, ParamsObject obj = null)
-        {
-            return RequestAsync<object>(path, method, obj);
         }
 
         #endregion
@@ -855,7 +877,170 @@ namespace CurrencyCloud
         }
 
         #endregion
-        
+
+        #region Onboarding
+
+        /// <summary>
+        /// Gets a list of countries.
+        /// </summary>
+        /// <returns>Asynchronous task, which returns a list of countries.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<CountriesList> GetCountriesAsync() //CountriesList
+        {
+            var result = await RequestAsync<DataModel<CountriesList>>("/onboarding/v1/countries", HttpMethod.Get);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Gets document types for a specific country.
+        /// </summary>
+        /// <param name="countryCode">Country code</param>
+        /// <returns>Asynchronous task, which returns a list of document types.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<DocumentsList> GetDocumentTypesAsync(string countryCode) //DocumentTypesList
+        {
+            var result = await RequestAsync<DataModel<DocumentsList>>($"/onboarding/v1/countries/{countryCode}/document_types", HttpMethod.Get);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Gets a list of supported currencies.
+        /// </summary>
+        /// <returns>Asynchronous task, which returns a list of supported currencies.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<Entity.Onboarding.CurrenciesList> GetSupportedCurrenciesAsync() //SupportedCurrenciesList
+        {
+            var result = await RequestAsync<DataModel<Entity.Onboarding.CurrenciesList>>("/onboarding/v1/currencies/supported", HttpMethod.Get);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Gets details of a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <returns>Asynchronous task, which returns the requested form.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<FormWithAssociations> GetFormAsync(Guid formId) //Form
+        {
+            var result = await OnboardingRequestAsync<DataModel<FormWithAssociations>>($"/onboarding/v1/forms/{formId}", HttpMethod.Get);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Creates a new form.
+        /// </summary>
+        /// <param name="form">Form object</param>
+        /// <returns>Asynchronous task, which returns the newly created form.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<FormWithIds> CreateFormAsync(Form form) //Form
+        {
+            var result = await OnboardingRequestAsync<DataModel<FormWithIds>, Form>("/onboarding/v1/forms", HttpMethod.Post, form);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Submits a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <returns>Asynchronous task, which returns the form submission result.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<FormWithIds> SubmitFormAsync(Guid formId) //FormSubmission
+        {
+            var result = await OnboardingRequestAsync<DataModel<FormWithIds>>($"/onboarding/v1/forms/{formId}/submit", HttpMethod.Post);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Adds a person to a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="person">Person object</param>
+        /// <returns>Asynchronous task, which returns the added person.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<PersonWithIds> AddPersonToFormAsync(Guid formId, Person person) //Person
+        {
+            var result = await OnboardingRequestAsync<DataModel<PersonWithIds>, Person>($"/onboarding/v1/forms/{formId}/people", HttpMethod.Post, person);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Adds a document to a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="document">Document object</param>
+        /// <returns>Asynchronous task, which returns the added document.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<DocumentWithIds> AddDocumentToFormAsync(Guid formId, Document document) //Document
+        {
+            var result = await OnboardingRequestAsync<DataModel<DocumentWithIds>, Document>($"/onboarding/v1/forms/{formId}/documents", HttpMethod.Post, document);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Adds a document image to a document.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="documentId">Document ID</param>
+        /// <param name="documentImage">Document image object</param>
+        /// <returns>Asynchronous task, which returns the added document image.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<Entity.Onboarding.DocumentImageWithIds> AddDocumentImageAsync(Guid formId, Guid documentId,
+            DocumentImage documentImage) //DocumentImage
+        {
+            var result = await OnboardingRequestAsync<DataModel<Entity.Onboarding.DocumentImageWithIds>, DocumentImage>(
+                $"/onboarding/v1/forms/{formId}/documents/{documentId}/document_images",
+                HttpMethod.Post,
+                documentImage);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Adds a account usage information to a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="accountUsage">Account usage object</param>
+        /// <returns>Asynchronous task, which returns the added account usage.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<AccountUsageWithIds> AddAccountUsageAsync(Guid formId, AccountUsage accountUsage)
+        {
+            var result = await OnboardingRequestAsync<DataModel<AccountUsageWithIds>, AccountUsage>(
+                $"/onboarding/v1/forms/{formId}/account_usage",
+                HttpMethod.Put,
+                accountUsage);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Adds business information to a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <param name="businessInformation">Business information object</param>
+        /// <returns>Asynchronous task, which returns the added business information.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<Entity.Onboarding.BusinessInformationWithIds> AddBusinessInformationAsync(
+            Guid formId,
+            BusinessInformation businessInformation)
+        {
+            var result = await OnboardingRequestAsync<DataModel<Entity.Onboarding.BusinessInformationWithIds>, BusinessInformation>(
+                $"/onboarding/v1/forms/{formId}/business_information",
+                HttpMethod.Put,
+                businessInformation);
+            return result.Data;
+        }
+
+        #endregion
+
         #region Ibans
 
         /// <summary>
@@ -1176,9 +1361,9 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the list of the currencies.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<CurrenciesList> GetAvailableCurrenciesAsync()
+        public async Task<Entity.List.CurrenciesList> GetAvailableCurrenciesAsync()
         {
-            return await RequestAsync<CurrenciesList>("/v2/reference/currencies", HttpMethod.Get);
+            return await RequestAsync<Entity.List.CurrenciesList>("/v2/reference/currencies", HttpMethod.Get);
         }
 
         /// <summary>
@@ -1564,24 +1749,51 @@ namespace CurrencyCloud
 
         private static async Task<List<Error>> CreateErrors(HttpContent content)
         {
-            string errorString = await content.ReadAsStringAsync();
+            var errorString = await content.ReadAsStringAsync();
+            var errorObject = JObject.Parse(errorString);
 
-            JObject errorObject = JObject.Parse(errorString);
-
-            var errors = from JProperty error in errorObject["error_messages"] 
-                select new Error(error.Name, 
-                    error.Value is JArray ? (from errorMessage in error.Value 
-                            select new Error.ErrorMessage(errorMessage["code"].Value<string>(),
-                                errorMessage["message"].Value<string>(),
-                                (from JProperty param in errorMessage["params"]
-                                    select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
-                                .ToDictionary(x => x.Key, x => x.Value)))
-                        .ToList() : new List<Error.ErrorMessage>(){new Error.ErrorMessage(error.Value["code"].Value<string>(), 
-                            error.Value["message"].Value<string>(), (from JProperty param in error.Value["params"]
-                                select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
-                            .ToDictionary(x => x.Key, x => x.Value))}
-                );
-            return errors.ToList();
+            try
+            {
+                var errors = from JProperty error in errorObject["error_messages"]
+                    select new Error(error.Name,
+                        error.Value is JArray
+                            ? (from errorMessage in error.Value
+                                select new Error.ErrorMessage(errorMessage["code"].Value<string>(),
+                                    errorMessage["message"].Value<string>(),
+                                    (from JProperty param in errorMessage["params"]
+                                        select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
+                                    .ToDictionary(x => x.Key, x => x.Value)))
+                            .ToList()
+                            : new List<Error.ErrorMessage>()
+                            {
+                                new(error.Value["code"].Value<string>(),
+                                    error.Value["message"].Value<string>(),
+                                    (from JProperty param in error.Value["params"]
+                                        select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
+                                    .ToDictionary(x => x.Key, x => x.Value))
+                            }
+                    );
+                return errors.ToList();
+            }
+            catch (System.Exception)
+            {
+                var errors = from JProperty error in errorObject["error_messages"]
+                    select new Error(error.Name,
+                        error.Value is JArray
+                            ? (from errorMessage in error.Value
+                                select new Error.ErrorMessage(errorMessage["error_code"].Value<string>(),
+                                    errorMessage["reason"].Value<string>(),
+                                    new Dictionary<string, string>()))
+                            .ToList()
+                            : new List<Error.ErrorMessage>
+                            {
+                                new(error.Value["error_code"].Value<string>(),
+                                    error.Value["reason"].Value<string>(),
+                                    new Dictionary<string, string>())
+                            }
+                    );
+                return errors.ToList();
+            }
         }
 
         public static async Task<ApiException> FromHttpResponse(HttpResponseMessage res)
@@ -1600,6 +1812,8 @@ namespace CurrencyCloud
                     return new ForbiddenException(request, response, errors);
                 case 404:
                     return new NotFoundException(request, response, errors);
+                case 422:
+                    return new ValidationException(request, response, errors);
                 case 429:
                     return new TooManyRequestsException(request, response, errors);
                 case 500:
@@ -1627,7 +1841,12 @@ namespace CurrencyCloud
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
-            property.PropertyName = property.PropertyName.ToSnakeCase();
+
+            var jsonPropertyAttribute = member.GetCustomAttributes(typeof(JsonPropertyAttribute), false).LastOrDefault();
+            
+            property.PropertyName = jsonPropertyAttribute != null
+                ? ((JsonPropertyAttribute)jsonPropertyAttribute).PropertyName
+                : property.PropertyName.ToSnakeCase();
 
             return property;
         }

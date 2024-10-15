@@ -1,7 +1,11 @@
-﻿using CurrencyCloud.Entity;
+﻿using System;
+using System.Threading.Tasks;
+using CurrencyCloud.Entity;
 using CurrencyCloud.Entity.List;
+using CurrencyCloud.Entity.Onboarding;
 using CurrencyCloud.Entity.Pagination;
 using CurrencyCloud.Environment;
+using CurrencyCloud.Exception;
 
 namespace CurrencyCloud;
 
@@ -346,7 +350,110 @@ public interface ICurrencyCloudClient
     /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
     Task<AddedFunds> AddDemoFundsAsync(AddFundsParameters parameters = null);
-    
+
+    /// <summary>
+    /// Gets a list of countries.
+    /// </summary>
+    /// <returns>Asynchronous task, which returns a list of countries.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<CountriesList> GetCountriesAsync();
+
+    /// <summary>
+    /// Gets document types for a specific country.
+    /// </summary>
+    /// <param name="countryCode">Country code</param>
+    /// <returns>Asynchronous task, which returns a list of document types.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<DocumentsList> GetDocumentTypesAsync(string countryCode);
+
+    /// <summary>
+    /// Gets a list of supported currencies.
+    /// </summary>
+    /// <returns>Asynchronous task, which returns a list of supported currencies.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<Entity.Onboarding.CurrenciesList> GetSupportedCurrenciesAsync();
+
+    /// <summary>
+    /// Gets details of a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <returns>Asynchronous task, which returns the requested form.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<FormWithAssociations> GetFormAsync(Guid formId);
+
+    /// <summary>
+    /// Creates a new form.
+    /// </summary>
+    /// <param name="form">Form object</param>
+    /// <returns>Asynchronous task, which returns the newly created form.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<FormWithIds> CreateFormAsync(Form form);
+
+    /// <summary>
+    /// Submits a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <returns>Asynchronous task, which returns the form submission result.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<FormWithIds> SubmitFormAsync(Guid formId);
+
+    /// <summary>
+    /// Adds a person to a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="person">Person object</param>
+    /// <returns>Asynchronous task, which returns the added person.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<PersonWithIds> AddPersonToFormAsync(Guid formId, Person person);
+
+    /// <summary>
+    /// Adds a document to a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="document">Document object</param>
+    /// <returns>Asynchronous task, which returns the added document.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<DocumentWithIds> AddDocumentToFormAsync(Guid formId, Document document);
+
+    /// <summary>
+    /// Adds a document image to a document.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="documentId">Document ID</param>
+    /// <param name="documentImage">Document image object</param>
+    /// <returns>Asynchronous task, which returns the added document image.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<DocumentImageWithIds> AddDocumentImageAsync(Guid formId, Guid documentId, DocumentImage documentImage);
+
+    /// <summary>
+    /// Updates a form's associated account usage. The account usage outlines how the applicant intends to use their account.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="accountUsage">Account usage object</param>
+    /// <returns>Asynchronous task, which returns the added account usage.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<AccountUsageWithIds> AddAccountUsageAsync(Guid formId, AccountUsage accountUsage);
+
+    /// <summary>
+    /// Adds business information to a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <param name="businessInformation">Business information object</param>
+    /// <returns>Asynchronous task, which returns the added business information.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<BusinessInformationWithIds> AddBusinessInformationAsync(Guid formId, BusinessInformation businessInformation);
+
     /// <summary>
     /// Find IBANs assigned to the logged in account.
     /// </summary>
@@ -514,7 +621,7 @@ public interface ICurrencyCloudClient
     /// <returns>Asynchronous task, which returns the list of the currencies.</returns>
     /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
-    Task<CurrenciesList> GetAvailableCurrenciesAsync();
+    Task<Entity.List.CurrenciesList> GetAvailableCurrenciesAsync();
 
     /// <summary>
     /// Gets a list of purpose codes for a given currency.

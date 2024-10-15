@@ -138,6 +138,11 @@ namespace CurrencyCloud.Exception
     {
         public InternalApplicationException(Request request, Response response, List<Error> errors): base(request, response, errors) { }
     }
+    
+    public class ValidationException : ApiException
+    {
+        public ValidationException(Request request, Response response, List<Error> errors): base(request, response, errors) { }
+    }
 
     public class UndefinedException : ApiException
     {
