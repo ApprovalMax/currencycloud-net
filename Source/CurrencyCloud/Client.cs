@@ -188,10 +188,10 @@ namespace CurrencyCloud
                 await AuthorizeAsync();
             }
 
-            var httpRequestMessage = CloneHttpRequestMessage(requestMessage);
-
             Func<Task<TResult>> requestAsyncDelegate = async () =>
             {
+                var httpRequestMessage = CloneHttpRequestMessage(requestMessage);
+                
                 Debug.WriteLine(
                     "UTC: {0} - HTTP {1} Request - {2} Content - {3}",
                     DateTime.UtcNow,
