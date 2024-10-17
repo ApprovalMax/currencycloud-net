@@ -176,7 +176,7 @@ namespace CurrencyCloud
             return token;
         }
 
-        private async Task<TResult> RequestAsync<TResult>(HttpRequestMessage httpRequestMessage)
+        private async Task<TResult> RequestAsync<TResult>(HttpRequestMessage requestMessage)
         {
             if (httpClient == null)
             {
@@ -187,6 +187,8 @@ namespace CurrencyCloud
             {
                 await AuthorizeAsync();
             }
+
+            var httpRequestMessage = CloneHttpRequestMessage(requestMessage);
 
             Func<Task<TResult>> requestAsyncDelegate = async () =>
             {
