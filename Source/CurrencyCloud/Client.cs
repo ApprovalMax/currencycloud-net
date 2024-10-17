@@ -1841,10 +1841,11 @@ namespace CurrencyCloud
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
             var jsonPropertyAttribute = member.GetCustomAttributes(typeof(JsonPropertyAttribute), false).LastOrDefault();
+            var attributePropertyName = ((JsonPropertyAttribute)jsonPropertyAttribute)?.PropertyName;
             
-            property.PropertyName = jsonPropertyAttribute != null
-                ? ((JsonPropertyAttribute)jsonPropertyAttribute).PropertyName
-                : property.PropertyName.ToSnakeCase();
+            property.PropertyName = string.IsNullOrWhiteSpace(attributePropertyName)
+                ? property.PropertyName.ToSnakeCase()
+                : attributePropertyName;
 
             return property;
         }
