@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using CurrencyCloud.Environment;
 using Microsoft.Extensions.Logging;
 
