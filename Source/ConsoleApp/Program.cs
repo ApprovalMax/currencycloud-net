@@ -1,17 +1,11 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
 using CurrencyCloud;
 using CurrencyCloud.Authorization;
-using CurrencyCloud.Entity.Onboarding;
-using CurrencyCloud.Entity.Onboarding.Enums;
 using CurrencyCloud.Environment;
 using Microsoft.Extensions.DependencyInjection;
-using DocumentImage = CurrencyCloud.Entity.Onboarding.DocumentImage;
 
 namespace ConsoleApp;
 

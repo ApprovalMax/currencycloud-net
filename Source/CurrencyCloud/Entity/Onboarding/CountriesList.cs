@@ -1,4 +1,5 @@
 ﻿using System;
+using CurrencyCloud.Entity.Onboarding.Enums;
 using Newtonsoft.Json;
 
 namespace CurrencyCloud.Entity.Onboarding;
@@ -18,7 +19,7 @@ public sealed class CountriesList
         public string DialCode { get; set; }
         public bool EeaCountry { get; set; }
         public bool PermittedJurisdiction { get; set; }
-        public string[] DocumentTypes { get; set; }
+        public DocumentType[] DocumentTypes { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
