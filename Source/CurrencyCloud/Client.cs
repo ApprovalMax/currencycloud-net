@@ -176,7 +176,7 @@ namespace CurrencyCloud
             return token;
         }
 
-        private async Task<TResult> RequestAsync<TResult>(HttpRequestMessage httpRequestMessage)
+        private async Task<TResult> RequestAsync<TResult>(HttpRequestMessage requestMessage)
         {
             if (httpClient == null)
             {
@@ -190,6 +190,8 @@ namespace CurrencyCloud
 
             Func<Task<TResult>> requestAsyncDelegate = async () =>
             {
+                var httpRequestMessage = CloneHttpRequestMessage(requestMessage);
+                
                 Debug.WriteLine(
                     "UTC: {0} - HTTP {1} Request - {2} Content - {3}",
                     DateTime.UtcNow,
@@ -1768,47 +1770,43 @@ namespace CurrencyCloud
             var errorString = await content.ReadAsStringAsync();
             var errorObject = JObject.Parse(errorString);
 
-            try
+            var errors = from JProperty error in errorObject["error_messages"]
+                select new Error(
+                    error.Name,
+                    error.Value is JArray
+                        ? (from errorMessage in error.Value
+                            select new Error.ErrorMessage(
+                                GetTokenValue(errorMessage, "code", "error_code"),
+                                GetTokenValue(errorMessage, "message", "reason"),
+                                GetParamsDictionary(errorMessage["params"])
+                            )).ToList()
+                        : new List<Error.ErrorMessage>
+                        {
+                            new Error.ErrorMessage(
+                                GetTokenValue(error.Value, "code", "error_code"),
+                                GetTokenValue(error.Value, "message", "reason"),
+                                GetParamsDictionary(error.Value["params"])
+                            )
+                        }
+                );
+
+            return errors.ToList();
+            
+            static string GetTokenValue(JToken token, string primaryKey, string fallbackKey)
             {
-                var errors = from JProperty error in errorObject["error_messages"]
-                    select new Error(error.Name,
-                        error.Value is JArray
-                            ? (from errorMessage in error.Value
-                                select new Error.ErrorMessage(errorMessage["code"].Value<string>(),
-                                    errorMessage["message"].Value<string>(),
-                                    (from JProperty param in errorMessage["params"]
-                                        select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
-                                    .ToDictionary(x => x.Key, x => x.Value)))
-                            .ToList()
-                            : new List<Error.ErrorMessage>()
-                            {
-                                new(error.Value["code"].Value<string>(),
-                                    error.Value["message"].Value<string>(),
-                                    (from JProperty param in error.Value["params"]
-                                        select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
-                                    .ToDictionary(x => x.Key, x => x.Value))
-                            }
-                    );
-                return errors.ToList();
+                return token[primaryKey]?.Value<string>() ?? token[fallbackKey]?.Value<string>();
             }
-            catch (System.Exception)
+
+            static Dictionary<string, string> GetParamsDictionary(JToken paramsToken)
             {
-                var errors = from JProperty error in errorObject["error_messages"]
-                    select new Error(error.Name,
-                        error.Value is JArray
-                            ? (from errorMessage in error.Value
-                                select new Error.ErrorMessage(errorMessage["error_code"].Value<string>(),
-                                    errorMessage["reason"].Value<string>(),
-                                    new Dictionary<string, string>()))
-                            .ToList()
-                            : new List<Error.ErrorMessage>
-                            {
-                                new(error.Value["error_code"].Value<string>(),
-                                    error.Value["reason"].Value<string>(),
-                                    new Dictionary<string, string>())
-                            }
-                    );
-                return errors.ToList();
+                if (paramsToken == null)
+                {
+                    return new Dictionary<string, string>();
+                }
+
+                return (from JProperty param in paramsToken
+                        select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
+                    .ToDictionary(x => x.Key, x => x.Value);
             }
         }
 
@@ -1859,10 +1857,11 @@ namespace CurrencyCloud
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
             var jsonPropertyAttribute = member.GetCustomAttributes(typeof(JsonPropertyAttribute), false).LastOrDefault();
+            var attributePropertyName = ((JsonPropertyAttribute)jsonPropertyAttribute)?.PropertyName;
             
-            property.PropertyName = jsonPropertyAttribute != null
-                ? ((JsonPropertyAttribute)jsonPropertyAttribute).PropertyName
-                : property.PropertyName.ToSnakeCase();
+            property.PropertyName = string.IsNullOrWhiteSpace(attributePropertyName)
+                ? property.PropertyName.ToSnakeCase()
+                : attributePropertyName;
 
             return property;
         }
