@@ -505,6 +505,22 @@ namespace CurrencyCloud
         }
 
         /// <summary>
+        /// Verifies beneficiary details without creating one.
+        /// </summary>
+        /// <param name="request">Beneficiary verification request data</param>
+        /// <returns>Asynchronous task, which returns the verified beneficiary.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<BeneficiaryVerification> VerifyBeneficiaryAsync(BeneficiaryVerificationParameters request)
+        {
+            var paramsObj = ParamsObject.CreateFromStaticObject(request);
+
+            return await RequestAsync<BeneficiaryVerification>("/v2/beneficiaries/account_verification",
+                HttpMethod.Post, paramsObj);
+        }
+
+
+        /// <summary>
         /// Creates a new beneficiary.
         /// </summary>
         /// <param name="beneficiary">Beneficiary object to be created</param>
