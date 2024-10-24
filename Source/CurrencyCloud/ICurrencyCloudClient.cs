@@ -150,7 +150,6 @@ public interface ICurrencyCloudClient
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
     Task<BeneficiaryVerification> VerifyBeneficiaryAsync(BeneficiaryVerificationParameters request);
 
-
     /// <summary>
     /// Creates a new beneficiary.
     /// </summary>

@@ -1,29 +1,29 @@
+using CurrencyCloud.Authorization;
+using CurrencyCloud.Entity;
+using CurrencyCloud.Entity.List;
+using CurrencyCloud.Entity.Onboarding;
+using CurrencyCloud.Entity.Pagination;
+using CurrencyCloud.Environment;
+using CurrencyCloud.Exception;
+using CurrencyCloud.Extension;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using Polly;
 using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using CurrencyCloud.Entity;
-using CurrencyCloud.Extension;
-using CurrencyCloud.Exception;
-using CurrencyCloud.Environment;
-using CurrencyCloud.Entity.Pagination;
-using CurrencyCloud.Entity.List;
-using Polly;
-using CurrencyCloud.Authorization;
-using CurrencyCloud.Entity.Onboarding;
+using System.Threading.Tasks;
+using System.Web;
 
 [assembly: InternalsVisibleTo("Currencycloud.Tests")]
 
@@ -37,6 +37,7 @@ namespace CurrencyCloud
         private HttpClient httpClient;
         private readonly IAuthorizationService authorizationService;
         private string onBehalfOf;
+
         private static readonly JsonSerializerSettings JsonSerializerOptions = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -47,7 +48,8 @@ namespace CurrencyCloud
         {
             this.httpClient = httpClientFactory.CreateClient(nameof(Client));
             httpClient.DefaultRequestHeaders.Add("User-Agent", Constants.UserAgent);
-            this.authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
+            this.authorizationService =
+                authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
         }
 
         internal string Token
@@ -125,26 +127,28 @@ namespace CurrencyCloud
                 {
                     Content = new StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json")
                 };
-            
+
             return await RequestAsync<TResult>(message);
         }
-        
-        private async Task<TResult> OnboardingRequestAsync<TResult, TRequest>(string path, HttpMethod method, TRequest request)
+
+        private async Task<TResult> OnboardingRequestAsync<TResult, TRequest>(string path, HttpMethod method,
+            TRequest request)
         {
             var message = method == HttpMethod.Get
                 ? new HttpRequestMessage(method, path)
                 : new HttpRequestMessage(method, path)
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(request, JsonSerializerOptions), System.Text.Encoding.UTF8, "application/json")
+                    Content = new StringContent(JsonConvert.SerializeObject(request, JsonSerializerOptions),
+                        System.Text.Encoding.UTF8, "application/json")
                 };
-            
+
             return await RequestAsync<TResult>(message);
         }
 
         private async Task<TResult> RequestAsync<TResult>(string path, HttpMethod method, ParamsObject obj = null)
         {
             var paramsObj = new ParamsObject();
-            if(obj != null)
+            if (obj != null)
             {
                 paramsObj += obj;
             }
@@ -191,7 +195,7 @@ namespace CurrencyCloud
             Func<Task<TResult>> requestAsyncDelegate = async () =>
             {
                 var httpRequestMessage = CloneHttpRequestMessage(requestMessage);
-                
+
                 Debug.WriteLine(
                     "UTC: {0} - HTTP {1} Request - {2} Content - {3}",
                     DateTime.UtcNow,
@@ -200,13 +204,14 @@ namespace CurrencyCloud
                     httpRequestMessage.Content?.ReadAsStringAsync().Result);
 
                 if (Retry.Enabled)
-                    Debug.WriteLine("UTC: {0} - Retrying request - Retries: {1}, MinWait: {2}, MaxWait: {3}, Jitter: {4}]",
+                    Debug.WriteLine(
+                        "UTC: {0} - Retrying request - Retries: {1}, MinWait: {2}, MaxWait: {3}, Jitter: {4}]",
                         DateTime.UtcNow, Retry.NumRetries, Retry.MinWait, Retry.MaxWait, Retry.Jitter);
 
-                HttpResponseMessage res = Retry.Enabled ?
-                    await retryPolicy.ExecuteAsync(
-                        ct => httpClient.SendAsync(CloneHttpRequestMessage(httpRequestMessage)), CancellationToken.None) :
-                    await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage res = Retry.Enabled
+                    ? await retryPolicy.ExecuteAsync(
+                        ct => httpClient.SendAsync(CloneHttpRequestMessage(httpRequestMessage)), CancellationToken.None)
+                    : await httpClient.SendAsync(httpRequestMessage);
 
                 if (res.IsSuccessStatusCode)
                 {
@@ -219,7 +224,7 @@ namespace CurrencyCloud
                 throw await ApiExceptionFactory.FromHttpResponse(res);
             };
 
-            for (int attempts = 0;; attempts++)
+            for (int attempts = 0; ; attempts++)
             {
                 try
                 {
@@ -322,7 +327,8 @@ namespace CurrencyCloud
                 throw new InvalidOperationException("Client is not initialized.");
             }
 
-            HttpResponseMessage res = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/v2/authenticate/close_session"));
+            HttpResponseMessage res =
+                await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/v2/authenticate/close_session"));
             if (res.IsSuccessStatusCode)
             {
                 httpClient.Dispose();
@@ -415,7 +421,8 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<PaymentChargesSettingsList> GetPaymentChargesSettingsAsync(string id)
         {
-            return await RequestAsync<PaymentChargesSettingsList>("/v2/accounts/" + id + "/payment_charges_settings", HttpMethod.Get);
+            return await RequestAsync<PaymentChargesSettingsList>("/v2/accounts/" + id + "/payment_charges_settings",
+                HttpMethod.Get);
         }
 
         /// <summary>
@@ -425,7 +432,8 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the updated account.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaymentChargesSettings> ManageAccountPaymentChargesSettingsAsync(PaymentChargesSettings paymentChargesSettings)
+        public async Task<PaymentChargesSettings> ManageAccountPaymentChargesSettingsAsync(
+            PaymentChargesSettings paymentChargesSettings)
         {
             ParamsObject optional = ParamsObject.CreateFromStaticObject(paymentChargesSettings);
             string accountId = paymentChargesSettings.AccountId;
@@ -437,7 +445,9 @@ namespace CurrencyCloud
             if (string.IsNullOrEmpty(chargeSettingsId))
                 throw new ArgumentException("Charge Settings Id cannot be null");
 
-            return await RequestAsync<PaymentChargesSettings>("/v2/accounts/" + accountId + "/payment_charges_settings/" + chargeSettingsId, HttpMethod.Post, optional);
+            return await RequestAsync<PaymentChargesSettings>(
+                "/v2/accounts/" + accountId + "/payment_charges_settings/" + chargeSettingsId, HttpMethod.Post,
+                optional);
         }
 
         #endregion
@@ -487,7 +497,7 @@ namespace CurrencyCloud
             paramsObj.AddNotNull("Amount", amount);
             return await RequestAsync<MarginBalanceTopUp>("/v2/balances/top_up_margin", HttpMethod.Post, paramsObj);
         }
-        
+
         #endregion
 
         #region Beneficiaries
@@ -520,7 +530,6 @@ namespace CurrencyCloud
             return await RequestAsync<BeneficiaryVerification>("/v2/beneficiaries/account_verification",
                 HttpMethod.Post, paramsObj);
         }
-
 
         /// <summary>
         /// Creates a new beneficiary.
@@ -722,11 +731,13 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the details of the cancelled conversion</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<ConversionCancellation> QuoteCancelConversionAsync(ConversionCancellation conversionCancellationQuote)
+        public async Task<ConversionCancellation> QuoteCancelConversionAsync(
+            ConversionCancellation conversionCancellationQuote)
         {
             string id = conversionCancellationQuote.ConversionId;
 
-            return await RequestAsync<ConversionCancellation>("/v2/conversions/" + id + "/cancellation_quote", HttpMethod.Get, null);
+            return await RequestAsync<ConversionCancellation>("/v2/conversions/" + id + "/cancellation_quote",
+                HttpMethod.Get, null);
         }
 
         /// <summary>
@@ -744,7 +755,8 @@ namespace CurrencyCloud
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentException("Conversion Id cannot be null");
 
-            return await RequestAsync<ConversionCancellation>("/v2/conversions/" + id + "/cancel", HttpMethod.Post, paramsObj);
+            return await RequestAsync<ConversionCancellation>("/v2/conversions/" + id + "/cancel", HttpMethod.Post,
+                paramsObj);
         }
 
         /// <summary>
@@ -754,7 +766,8 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the details of the conversion date change</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<ConversionDateChange> QuoteDateChangeConversionAsync(ConversionDateChange conversionDateChange)
+        public async Task<ConversionDateChange> QuoteDateChangeConversionAsync(
+            ConversionDateChange conversionDateChange)
         {
             ParamsObject paramsObj = ParamsObject.CreateFromStaticObject(conversionDateChange);
             string id = conversionDateChange.ConversionId;
@@ -765,7 +778,8 @@ namespace CurrencyCloud
             if (!newSettlementDate.HasValue)
                 throw new ArgumentException("New Settlement Date cannot be null");
 
-            return await RequestAsync<ConversionDateChange>("/v2/conversions/" + id + "/date_change_quote", HttpMethod.Get, paramsObj);
+            return await RequestAsync<ConversionDateChange>("/v2/conversions/" + id + "/date_change_quote",
+                HttpMethod.Get, paramsObj);
         }
 
         /// <summary>
@@ -786,7 +800,8 @@ namespace CurrencyCloud
             if (!newSettlementDate.HasValue)
                 throw new ArgumentException("New Settlement Date cannot be null");
 
-            return await RequestAsync<ConversionDateChange>("/v2/conversions/" + id + "/date_change", HttpMethod.Post, paramsObj);
+            return await RequestAsync<ConversionDateChange>("/v2/conversions/" + id + "/date_change", HttpMethod.Post,
+                paramsObj);
         }
 
         /// <summary>
@@ -808,7 +823,8 @@ namespace CurrencyCloud
 
             ParamsObject paramsObj = ParamsObject.CreateFromStaticObject(conversionSplit);
 
-            return await RequestAsync<ConversionSplit>("/v2/conversions/" + id + "/split_preview", HttpMethod.Get, paramsObj);
+            return await RequestAsync<ConversionSplit>("/v2/conversions/" + id + "/split_preview", HttpMethod.Get,
+                paramsObj);
         }
 
         /// <summary>
@@ -844,7 +860,8 @@ namespace CurrencyCloud
         {
             string id = conversionSplit.Id;
 
-            return await RequestAsync<ConversionSplitHistory>("/v2/conversions/" + id + "/split_history", HttpMethod.Get, null);
+            return await RequestAsync<ConversionSplitHistory>("/v2/conversions/" + id + "/split_history",
+                HttpMethod.Get, null);
         }
 
         /// <summary>
@@ -854,17 +871,19 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the list of the found conversions, as well as pagination information.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaginatedConversionProfitAndLosses> FindConversionProfitAndLossesAsync(ConversionProfitAndLossFindParameters parameters = null)
+        public async Task<PaginatedConversionProfitAndLosses> FindConversionProfitAndLossesAsync(
+            ConversionProfitAndLossFindParameters parameters = null)
         {
             ParamsObject optional = ParamsObject.CreateFromStaticObject(parameters);
 
-            return await RequestAsync<PaginatedConversionProfitAndLosses>("/v2/conversions/profit_and_loss", HttpMethod.Get, optional);
+            return await RequestAsync<PaginatedConversionProfitAndLosses>("/v2/conversions/profit_and_loss",
+                HttpMethod.Get, optional);
         }
 
         #endregion
-        
+
         #region Funding
-        
+
         /// <summary>
         /// Returns an object that contains information related to Funding Accounts
         /// </summary>
@@ -872,7 +891,8 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the list of the funding accounts, as well as pagination information.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaginatedFundingAccounts> FindFundingAccountsAsync(FundingAccountFindParameters parameters = null)
+        public async Task<PaginatedFundingAccounts> FindFundingAccountsAsync(
+            FundingAccountFindParameters parameters = null)
         {
             ParamsObject optional = ParamsObject.CreateFromStaticObject(parameters);
 
@@ -919,7 +939,9 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<DocumentsList> GetDocumentTypesAsync(string countryCode) //DocumentTypesList
         {
-            var result = await RequestAsync<DataModel<DocumentsList>>($"/onboarding/v1/countries/{countryCode}/document_types", HttpMethod.Get);
+            var result =
+                await RequestAsync<DataModel<DocumentsList>>($"/onboarding/v1/countries/{countryCode}/document_types",
+                    HttpMethod.Get);
             return result.Data;
         }
 
@@ -931,7 +953,9 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<Entity.Onboarding.CurrenciesList> GetSupportedCurrenciesAsync() //SupportedCurrenciesList
         {
-            var result = await RequestAsync<DataModel<Entity.Onboarding.CurrenciesList>>("/onboarding/v1/currencies/supported", HttpMethod.Get);
+            var result =
+                await RequestAsync<DataModel<Entity.Onboarding.CurrenciesList>>("/onboarding/v1/currencies/supported",
+                    HttpMethod.Get);
             return result.Data;
         }
 
@@ -944,7 +968,9 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<FormWithAssociations> GetFormAsync(Guid formId) //Form
         {
-            var result = await OnboardingRequestAsync<DataModel<FormWithAssociations>>($"/onboarding/v1/forms/{formId}", HttpMethod.Get);
+            var result =
+                await OnboardingRequestAsync<DataModel<FormWithAssociations>>($"/onboarding/v1/forms/{formId}",
+                    HttpMethod.Get);
             return result.Data;
         }
 
@@ -957,7 +983,9 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<FormWithIds> CreateFormAsync(Form form) //Form
         {
-            var result = await OnboardingRequestAsync<DataModel<FormWithIds>, Form>("/onboarding/v1/forms", HttpMethod.Post, form);
+            var result =
+                await OnboardingRequestAsync<DataModel<FormWithIds>, Form>("/onboarding/v1/forms", HttpMethod.Post,
+                    form);
             return result.Data;
         }
 
@@ -970,7 +998,9 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<FormWithIds> SubmitFormAsync(Guid formId) //FormSubmission
         {
-            var result = await OnboardingRequestAsync<DataModel<FormWithIds>>($"/onboarding/v1/forms/{formId}/submit", HttpMethod.Post);
+            var result =
+                await OnboardingRequestAsync<DataModel<FormWithIds>>($"/onboarding/v1/forms/{formId}/submit",
+                    HttpMethod.Post);
             return result.Data;
         }
 
@@ -984,7 +1014,9 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<PersonWithIds> AddPersonToFormAsync(Guid formId, Person person) //Person
         {
-            var result = await OnboardingRequestAsync<DataModel<PersonWithIds>, Person>($"/onboarding/v1/forms/{formId}/people", HttpMethod.Post, person);
+            var result =
+                await OnboardingRequestAsync<DataModel<PersonWithIds>, Person>($"/onboarding/v1/forms/{formId}/people",
+                    HttpMethod.Post, person);
             return result.Data;
         }
 
@@ -998,7 +1030,9 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<DocumentWithIds> AddDocumentToFormAsync(Guid formId, Document document) //Document
         {
-            var result = await OnboardingRequestAsync<DataModel<DocumentWithIds>, Document>($"/onboarding/v1/forms/{formId}/documents", HttpMethod.Post, document);
+            var result =
+                await OnboardingRequestAsync<DataModel<DocumentWithIds>, Document>(
+                    $"/onboarding/v1/forms/{formId}/documents", HttpMethod.Post, document);
             return result.Data;
         }
 
@@ -1050,10 +1084,12 @@ namespace CurrencyCloud
             Guid formId,
             BusinessInformation businessInformation)
         {
-            var result = await OnboardingRequestAsync<DataModel<Entity.Onboarding.BusinessInformationWithIds>, BusinessInformation>(
-                $"/onboarding/v1/forms/{formId}/business_information",
-                HttpMethod.Put,
-                businessInformation);
+            var result =
+                await OnboardingRequestAsync<DataModel<Entity.Onboarding.BusinessInformationWithIds>,
+                    BusinessInformation>(
+                    $"/onboarding/v1/forms/{formId}/business_information",
+                    HttpMethod.Put,
+                    businessInformation);
             return result.Data;
         }
 
@@ -1170,6 +1206,7 @@ namespace CurrencyCloud
                 optional.AddNotNull("PayerIdentificationType", payer.IdentificationType);
                 optional.AddNotNull("PayerIdentificationValue", payer.IdentificationValue);
             }
+
             return await RequestAsync<Payment>("/v2/payments/" + id, HttpMethod.Post, optional);
         }
 
@@ -1238,7 +1275,8 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<PaymentConfirmation> GetPaymentConfirmationAsync(string id)
         {
-            return await RequestAsync<PaymentConfirmation>("/v2/payments/" + id + "/confirmation", HttpMethod.Get, null);
+            return await RequestAsync<PaymentConfirmation>("/v2/payments/" + id + "/confirmation", HttpMethod.Get,
+                null);
         }
 
         /// <summary>
@@ -1261,7 +1299,8 @@ namespace CurrencyCloud
             if (string.IsNullOrEmpty(paymentDeliveryDates.BankCountry))
                 throw new ArgumentException("Bank Country cannot be null");
 
-            return await RequestAsync<PaymentDeliveryDates>("/v2/payments/payment_delivery_date", HttpMethod.Get, paramsObj);
+            return await RequestAsync<PaymentDeliveryDates>("/v2/payments/payment_delivery_date", HttpMethod.Get,
+                paramsObj);
         }
 
         /// <summary>
@@ -1277,7 +1316,7 @@ namespace CurrencyCloud
 
             return await RequestAsync<QuotePaymentFee>("/v2/payments/quote_payment_fee", HttpMethod.Get, paramsObj);
         }
-        
+
         /// <summary>
         /// Returns an object containing the tracking information of a payment.
         /// </summary>
@@ -1287,9 +1326,10 @@ namespace CurrencyCloud
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<PaymentTrackingInfo> GetPaymentTrackingInfoAsync(string id)
         {
-            return await RequestAsync<PaymentTrackingInfo>("/v2/payments/" + id + "/tracking_info", HttpMethod.Get, null);
+            return await RequestAsync<PaymentTrackingInfo>("/v2/payments/" + id + "/tracking_info", HttpMethod.Get,
+                null);
         }
-        
+
         #endregion
 
         #region Rates
@@ -1319,7 +1359,7 @@ namespace CurrencyCloud
         public async Task<RatesList> FindRatesAsync(string currencyPair, bool? ignoreInvalidPairs = null)
         {
             ParamsObject paramsObj = new ParamsObject();
-            paramsObj.Add("CurrencyPair",currencyPair);
+            paramsObj.Add("CurrencyPair", currencyPair);
             paramsObj.AddNotNull("IgnoreInvalidPairs", ignoreInvalidPairs);
 
 
@@ -1339,13 +1379,14 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the list of the required beneficiary details.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<BeneficiaryDetailsList> GetBeneficiaryRequiredDetailsAsync(string currency = null, string bankAccountCountry = null, string beneficiaryCountry = null)
+        public async Task<BeneficiaryDetailsList> GetBeneficiaryRequiredDetailsAsync(string currency = null,
+            string bankAccountCountry = null, string beneficiaryCountry = null)
         {
             ParamsObject optional = null;
             if (!string.IsNullOrEmpty(currency)
                 || !string.IsNullOrEmpty(bankAccountCountry)
                 || !string.IsNullOrEmpty(beneficiaryCountry)
-                )
+               )
             {
                 optional = new ParamsObject();
                 optional.AddNotNull("Currency", currency);
@@ -1353,7 +1394,8 @@ namespace CurrencyCloud
                 optional.AddNotNull("BeneficiaryCountry", beneficiaryCountry);
             }
 
-            return await RequestAsync<BeneficiaryDetailsList>("/v2/reference/beneficiary_required_details", HttpMethod.Get, optional);
+            return await RequestAsync<BeneficiaryDetailsList>("/v2/reference/beneficiary_required_details",
+                HttpMethod.Get, optional);
         }
 
         /// <summary>
@@ -1364,7 +1406,8 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the list of the conversion dates.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<ConversionDatesList> GetConversionDatesAsync(string conversionPair, DateTime? startDate = null)
+        public async Task<ConversionDatesList> GetConversionDatesAsync(string conversionPair,
+            DateTime? startDate = null)
         {
             var paramsObj = new ParamsObject();
             paramsObj.Add("ConversionPair", conversionPair);
@@ -1393,14 +1436,16 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the list purpose codes.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaymentPurposeCodeList> GetPaymentPurposeCodes(string currency, string bankAccountCountry, string entityType = null)
+        public async Task<PaymentPurposeCodeList> GetPaymentPurposeCodes(string currency, string bankAccountCountry,
+            string entityType = null)
         {
             var paramsObj = new ParamsObject();
             paramsObj.Add("Currency", currency);
             paramsObj.Add("BankAccountCountry", bankAccountCountry);
             paramsObj.AddNotNull("EntityType", entityType);
 
-            return await RequestAsync<PaymentPurposeCodeList>("/v2/reference/payment_purpose_codes", HttpMethod.Get, paramsObj);
+            return await RequestAsync<PaymentPurposeCodeList>("/v2/reference/payment_purpose_codes", HttpMethod.Get,
+                paramsObj);
         }
 
         /// <summary>
@@ -1437,7 +1482,8 @@ namespace CurrencyCloud
                 optional.Add("Currency", currency);
             }
 
-            return await RequestAsync<SettlementAccountsList>("/v2/reference/settlement_accounts", HttpMethod.Get, optional);
+            return await RequestAsync<SettlementAccountsList>("/v2/reference/settlement_accounts", HttpMethod.Get,
+                optional);
         }
 
         /// <summary>
@@ -1449,12 +1495,13 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns required payer details and their basic validation formats.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PayerDetailsList> GetPayerRequiredDetailsAsync(string payerCountry, string payerEntityType = null, string paymentType = null)
+        public async Task<PayerDetailsList> GetPayerRequiredDetailsAsync(string payerCountry,
+            string payerEntityType = null, string paymentType = null)
         {
             ParamsObject optional = null;
             if (!string.IsNullOrEmpty(payerEntityType)
                 || !string.IsNullOrEmpty(paymentType)
-            )
+               )
             {
                 optional = new ParamsObject();
                 optional.AddNotNull("PayerEntityType", payerEntityType);
@@ -1466,7 +1513,8 @@ namespace CurrencyCloud
             paramsObj.AddNotNull("PayerEntityType", payerEntityType);
             paramsObj.AddNotNull("PaymentType", paymentType);
 
-            return await RequestAsync<PayerDetailsList>("/v2/reference/payer_required_details", HttpMethod.Get, paramsObj);
+            return await RequestAsync<PayerDetailsList>("/v2/reference/payer_required_details", HttpMethod.Get,
+                paramsObj);
         }
 
         /// <summary>
@@ -1495,14 +1543,16 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the Bank Details.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaymentFeeRulesList> GetPaymentFeeRulesAsync(string accountId=null, string paymentType=null, string chargeType=null)
+        public async Task<PaymentFeeRulesList> GetPaymentFeeRulesAsync(string accountId = null,
+            string paymentType = null, string chargeType = null)
         {
             var paramsObj = new ParamsObject();
             paramsObj.AddNotNull("AccountId", accountId);
             paramsObj.AddNotNull("PaymentType", paymentType);
             paramsObj.AddNotNull("ChargeType", chargeType);
 
-            return await RequestAsync<PaymentFeeRulesList>("/v2/reference/payment_fee_rules", HttpMethod.Get, paramsObj);
+            return await RequestAsync<PaymentFeeRulesList>("/v2/reference/payment_fee_rules", HttpMethod.Get,
+                paramsObj);
         }
 
         #endregion
@@ -1516,11 +1566,13 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns  the list of the report requests, as well as pagination information.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaginatedReportRequests> FindReportRequestsAsync(ReportRequestFindParameters parameters = null)
+        public async Task<PaginatedReportRequests> FindReportRequestsAsync(
+            ReportRequestFindParameters parameters = null)
         {
             ParamsObject optional = ParamsObject.CreateFromStaticObject(parameters);
 
-            return await RequestAsync<PaginatedReportRequests>("/v2/reports/report_requests/find", HttpMethod.Get, optional);
+            return await RequestAsync<PaginatedReportRequests>("/v2/reports/report_requests/find", HttpMethod.Get,
+                optional);
         }
 
         /// <summary>
@@ -1564,7 +1616,7 @@ namespace CurrencyCloud
         }
 
         #endregion
-        
+
 
         #region Transactions
 
@@ -1661,7 +1713,7 @@ namespace CurrencyCloud
         {
             return await RequestAsync<Transfer>("/v2/transfers/" + id + "/cancel", HttpMethod.Post, null);
         }
-        
+
         #endregion
 
         #region VirtualAccounts
@@ -1673,7 +1725,8 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the details of the Virtual Accounts assigned to the logged in account.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaginatedVirtualAccounts> FindVirtualAccountsAsync(VirtualAccountFindParameters parameters = null)
+        public async Task<PaginatedVirtualAccounts> FindVirtualAccountsAsync(
+            VirtualAccountFindParameters parameters = null)
         {
             ParamsObject optional = ParamsObject.CreateFromStaticObject(parameters);
 
@@ -1681,9 +1734,9 @@ namespace CurrencyCloud
         }
 
         #endregion
-        
+
         #region WithdrawalAccounts
-        
+
         /// <summary>
         /// Finds Withdrawal Accounts matching the accountId. If the account Id is omitted the withdrawal accounts
         /// for the house account and all sub-accounts are returned
@@ -1697,9 +1750,10 @@ namespace CurrencyCloud
             var paramsObj = new ParamsObject();
             paramsObj.AddNotNull("AccountId", accountId);
 
-            return await RequestAsync<PaginatedWithdrawalAccounts>("/v2/withdrawal_accounts/find", HttpMethod.Get, paramsObj);
+            return await RequestAsync<PaginatedWithdrawalAccounts>("/v2/withdrawal_accounts/find", HttpMethod.Get,
+                paramsObj);
         }
-        
+
         /// <summary>
         /// Pull funds from a withdrawal account
         /// </summary>
@@ -1709,7 +1763,8 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which pulls funds from a withdrawal account.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<WithdrawalAccountFunds> WithdrawalAccountsPullFundsAsync(string withdrawalAccountId, decimal amount,
+        public async Task<WithdrawalAccountFunds> WithdrawalAccountsPullFundsAsync(string withdrawalAccountId,
+            decimal amount,
             string reference)
         {
             if (string.IsNullOrEmpty(withdrawalAccountId))
@@ -1719,14 +1774,15 @@ namespace CurrencyCloud
             var paramsObj = new ParamsObject();
             paramsObj.AddNotNull("Reference", reference);
             paramsObj.AddNotNull("Amount", amount);
-            return await RequestAsync<WithdrawalAccountFunds>("/v2/withdrawal_accounts/"+withdrawalAccountId+"/pull_funds", 
+            return await RequestAsync<WithdrawalAccountFunds>(
+                "/v2/withdrawal_accounts/" + withdrawalAccountId + "/pull_funds",
                 HttpMethod.Post, paramsObj);
         }
-        
+
         #endregion
     }
-    
-    
+
+
     internal static class ApiExceptionFactory
     {
         private static Request CreateRequest(HttpRequestMessage requestMessage)
@@ -1771,27 +1827,27 @@ namespace CurrencyCloud
             var errorObject = JObject.Parse(errorString);
 
             var errors = from JProperty error in errorObject["error_messages"]
-                select new Error(
-                    error.Name,
-                    error.Value is JArray
-                        ? (from errorMessage in error.Value
-                            select new Error.ErrorMessage(
-                                GetTokenValue(errorMessage, "code", "error_code"),
-                                GetTokenValue(errorMessage, "message", "reason"),
-                                GetParamsDictionary(errorMessage["params"])
-                            )).ToList()
-                        : new List<Error.ErrorMessage>
-                        {
+                         select new Error(
+                             error.Name,
+                             error.Value is JArray
+                                 ? (from errorMessage in error.Value
+                                    select new Error.ErrorMessage(
+                               GetTokenValue(errorMessage, "code", "error_code"),
+                               GetTokenValue(errorMessage, "message", "reason"),
+                               GetParamsDictionary(errorMessage["params"])
+                           )).ToList()
+                                 : new List<Error.ErrorMessage>
+                                 {
                             new Error.ErrorMessage(
                                 GetTokenValue(error.Value, "code", "error_code"),
                                 GetTokenValue(error.Value, "message", "reason"),
                                 GetParamsDictionary(error.Value["params"])
                             )
-                        }
-                );
+                                 }
+                         );
 
             return errors.ToList();
-            
+
             static string GetTokenValue(JToken token, string primaryKey, string fallbackKey)
             {
                 return token[primaryKey]?.Value<string>() ?? token[fallbackKey]?.Value<string>();
@@ -1844,7 +1900,7 @@ namespace CurrencyCloud
         {
             JsonDictionaryContract contract = base.CreateDictionaryContract(objectType);
 
-            if(objectType.GenericTypeArguments[0] == typeof(string))
+            if (objectType.GenericTypeArguments[0] == typeof(string))
             {
                 contract.Converter = new PascalDictionaryConverter();
             }
@@ -1856,9 +1912,10 @@ namespace CurrencyCloud
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
-            var jsonPropertyAttribute = member.GetCustomAttributes(typeof(JsonPropertyAttribute), false).LastOrDefault();
+            var jsonPropertyAttribute =
+                member.GetCustomAttributes(typeof(JsonPropertyAttribute), false).LastOrDefault();
             var attributePropertyName = ((JsonPropertyAttribute)jsonPropertyAttribute)?.PropertyName;
-            
+
             property.PropertyName = string.IsNullOrWhiteSpace(attributePropertyName)
                 ? property.PropertyName.ToSnakeCase()
                 : attributePropertyName;
@@ -1874,7 +1931,8 @@ namespace CurrencyCloud
             throw new NotImplementedException();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+            JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null)
             {
