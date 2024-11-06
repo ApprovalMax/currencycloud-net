@@ -12,7 +12,7 @@ public enum DocumentType
     DrivingLicence,
     Mortgage,
     Passport,
-    PassportProofOfBusinessActivity,
+    ProofOfBusinessActivity,
     ProofOfBusinessIdentity,
     ProofOfDirectors,
     ProofOfOwners,
