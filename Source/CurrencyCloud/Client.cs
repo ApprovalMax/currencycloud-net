@@ -121,7 +121,7 @@ namespace CurrencyCloud
         private async Task<TResult> OnboardingRequestAsync<TResult>(string path, HttpMethod method)
         {
             // HACK: CurrencyCloud api requires not null content for POST requests
-            var message = method == HttpMethod.Get
+            var message = method == HttpMethod.Get || method == HttpMethod.Delete
                 ? new HttpRequestMessage(method, path)
                 : new HttpRequestMessage(method, path)
                 {
@@ -971,6 +971,21 @@ namespace CurrencyCloud
             var result =
                 await OnboardingRequestAsync<DataModel<FormWithAssociations>>($"/onboarding/v1/forms/{formId}",
                     HttpMethod.Get);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// Deletes a form.
+        /// </summary>
+        /// <param name="formId">Form ID</param>
+        /// <returns>Asynchronous task, which returns the date of deletion and form id.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<FormDeletionResult> DeleteFormAsync(Guid formId) //Form
+        {
+            var result =
+                await OnboardingRequestAsync<DataModel<FormDeletionResult>>($"/onboarding/v1/forms/{formId}",
+                    HttpMethod.Delete);
             return result.Data;
         }
 
