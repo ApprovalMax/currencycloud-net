@@ -395,6 +395,15 @@ public interface ICurrencyCloudClient
     Task<FormWithAssociations> GetFormAsync(Guid formId);
 
     /// <summary>
+    /// Deletes a form.
+    /// </summary>
+    /// <param name="formId">Form ID</param>
+    /// <returns>Asynchronous task, which returns the date of deletion and form id.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<FormDeletionResult> DeleteFormAsync(Guid formId);
+
+    /// <summary>
     /// Creates a new form.
     /// </summary>
     /// <param name="form">Form object</param>
