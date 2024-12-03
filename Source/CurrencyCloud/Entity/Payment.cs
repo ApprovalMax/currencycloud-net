@@ -152,6 +152,12 @@ namespace CurrencyCloud.Entity
         /// </summary>
         [Param]
         public string InvoiceDate { get; set; }
+        
+        /// <summary>
+        /// Compliance review status - 'passed', 'in_review' or 'rejected'.
+        /// </summary>
+        [Param]
+        public string ReviewStatus { get; set; }
 
 
         public string ToJSON()
@@ -188,7 +194,8 @@ namespace CurrencyCloud.Entity
                     FeeCurrency,
                     FeeAmount,
                     InvoiceNumber,
-                    InvoiceDate
+                    InvoiceDate,
+                    ReviewStatus
                 }
             };
             return JsonConvert.SerializeObject(obj);
@@ -232,7 +239,8 @@ namespace CurrencyCloud.Entity
                    FeeAmount == payment.FeeAmount &&
                    ChargeType == payment.ChargeType &&
                    InvoiceNumber == payment.InvoiceNumber &&
-                   InvoiceDate == payment.InvoiceDate;
+                   InvoiceDate == payment.InvoiceDate &&
+                   ReviewStatus == payment.ReviewStatus;
         }
 
         public override int GetHashCode()
