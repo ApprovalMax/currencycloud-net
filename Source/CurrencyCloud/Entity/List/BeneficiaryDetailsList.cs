@@ -21,6 +21,8 @@ namespace CurrencyCloud.Entity.List
             public string BeneficiaryFirstName { get; set; }
             public string BeneficiaryLastName { get; set; }
             public string BeneficiaryCompanyName { get; set; }
+            public string BeneficiaryIdentificationType { get; set; }
+            public string BeneficiaryIdentificationValue { get; set; }
             public string Aba { get; set; }
             public string SortCode { get; set; }
             public string Iban { get; set; }
@@ -31,8 +33,6 @@ namespace CurrencyCloud.Entity.List
             public string Clabe { get; set; }
             public string Cnaps { get; set; }
             public string Ifsc { get; set; }
-            public string BeneficiaryIdentificationType { get; set; }
-            public string BeneficiaryIdentificationValue { get; set; }
         }
 
         public List<Detail> Details { get; set; }
