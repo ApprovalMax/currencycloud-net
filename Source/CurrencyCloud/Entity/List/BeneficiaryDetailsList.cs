@@ -31,6 +31,8 @@ namespace CurrencyCloud.Entity.List
             public string Clabe { get; set; }
             public string Cnaps { get; set; }
             public string Ifsc { get; set; }
+            public string BeneficiaryIdentificationType { get; set; }
+            public string BeneficiaryIdentificationValue { get; set; }
         }
 
         public List<Detail> Details { get; set; }
