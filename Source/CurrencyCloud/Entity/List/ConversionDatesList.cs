@@ -12,6 +12,8 @@ namespace CurrencyCloud.Entity.List
 
         public DateTimeOffset FirstConversionDate { get; set; }
 
+        public DateTimeOffset NextDayConversionDate { get; set; }
+
         public DateTimeOffset DefaultConversionDate { get; set; }
 
         public DateTimeOffset OptimizeLiquidityConversionDate { get; set; }
@@ -27,6 +29,7 @@ namespace CurrencyCloud.Entity.List
                     InvalidConversionDates,
                     FirstConversionDate,
                     DefaultConversionDate,
+                    NextDayConversionDate,
                     OptimizeLiquidityConversionDate,
                     FirstConversionCutoffDatetime
                 }
