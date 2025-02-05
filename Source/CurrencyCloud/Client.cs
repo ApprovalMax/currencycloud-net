@@ -1422,7 +1422,7 @@ namespace CurrencyCloud
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<ConversionDatesList> GetConversionDatesAsync(string conversionPair,
-            DateTime? startDate = null)
+            DateTimeOffset? startDate = null)
         {
             var paramsObj = new ParamsObject();
             paramsObj.Add("ConversionPair", conversionPair);
@@ -1471,7 +1471,7 @@ namespace CurrencyCloud
         /// <returns>Asynchronous task, which returns the list of the payment dates.</returns>
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
-        public async Task<PaymentDatesList> GetPaymentDatesAsync(string currency, DateTime? startDate = null)
+        public async Task<PaymentDatesList> GetPaymentDatesAsync(string currency, DateTimeOffset? startDate = null)
         {
             var paramsObj = new ParamsObject();
             paramsObj.Add("Currency", currency);
