@@ -28,7 +28,7 @@ namespace CurrencyCloud.Tests.Mock.Data
                 BeneficiaryCity = "London",
                 BeneficiaryPostcode = "W11 2BQ",
                 BeneficiaryStateOrProvince = "TX",
-                BeneficiaryDateOfBirth = new DateTime(1990, 7, 20),
+                BeneficiaryDateOfBirth = new DateTimeOffset(1990, 7, 20, 0, 0, 0, TimeSpan.Zero),
                 BeneficiaryIdentificationType = "none",
                 BusinessNature = "law",
                 CompanyWebsite = "test.com"

@@ -27,7 +27,7 @@ namespace CurrencyCloud.Tests.Mock.Data
             Postcode = "W11 2BQ",
             StateOrProvince = "TX",
             Country = "GB",
-            DateOfBirth = new DateTime(1980, 10, 10),
+            DateOfBirth = new DateTimeOffset(1980, 10, 10, 0, 0, 0, TimeSpan.Zero),
             IdentificationType = "none"
         };
 
@@ -116,8 +116,8 @@ namespace CurrencyCloud.Tests.Mock.Data
         public static readonly PaymentTrackingInfo TrackingInfo1 = new Entity.PaymentTrackingInfo
         {
             Uetr = "46ed4827-7b6f-4491-a06f-b548d5a7512d",
-            InitiationTime = DateTime.Parse("2019-07-09T13:20:30+00:00"),
-            LastUpdateTime = DateTime.Parse("2019-07-10T15:39:08+00:00"),
+            InitiationTime = DateTimeOffset.Parse("2019-07-09T13:20:30+00:00"),
+            LastUpdateTime = DateTimeOffset.Parse("2019-07-10T15:39:08+00:00"),
             TransactionStatus = new Entity.PaymentTrackingInfo.TransactionStatusDef {
                 Status = "processing",
                 Reason = "transferred_and_tracked"
@@ -127,49 +127,49 @@ namespace CurrencyCloud.Tests.Mock.Data
                         Valid = true,
                         From = "BANABEBBXXX",
                         To = "BANAUS33XXX",
-                        SenderAcknowledgementReceipt = DateTime.Parse("2019-07-10T15:39:08+00:00"),
-                        LastUpdateTime =  DateTime.Parse("2019-07-10T15:39:08+00:00")
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T15:39:08+00:00"),
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T15:39:08+00:00")
                     },
                     new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "customer_credit_transfer_payment_cancellation_request",
                         Valid = true,
                         From = "BANABEBBXXX",
                         To = "BANAUS33XXX",
-                        SenderAcknowledgementReceipt = DateTime.Parse("2019-07-10T14:22:41+00:00"),
-                        LastUpdateTime =  DateTime.Parse("2019-07-10T14:22:41+00:00")
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T14:22:41+00:00"),
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T14:22:41+00:00")
                     },
                     new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "credit_transfer_payment_cancellation_request",
                         Valid = true,
                         From = "BANABEBBXXX",
                         To = "BANAUS33XXX",
                         Originator = "BANABEBBXXX",
-                        SenderAcknowledgementReceipt = DateTime.Parse("2019-07-10T14:22:41+00:00"),
-                        InterbankSettlementDate = DateTime.Parse("2019-07-09T00:00:00+00:00"),
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T14:22:41+00:00"),
+                        InterbankSettlementDate = DateTimeOffset.Parse("2019-07-09T00:00:00+00:00"),
                         InterbankSettlementAmount = new PaymentTrackingInfo.AmountDef() {
                             Currency = "USD",
                             Amount = 745437.57m
                         },
-                        LastUpdateTime =  DateTime.Parse("2019-07-10T14:22:41+00:00")
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T14:22:41+00:00")
                     },
                     new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "customer_credit_transfer_payment_cancellation_request",
                         Valid = true,
                         From = "BANABEBBXXX",
                         To = "BANAUS33XXX",
-                        SenderAcknowledgementReceipt = DateTime.Parse("2019-07-10T14:22:41+00:00"),
-                        LastUpdateTime =  DateTime.Parse("2019-07-10T14:22:41+00:00")
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T14:22:41+00:00"),
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T14:22:41+00:00")
                     },
                     new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "customer_credit_transfer_payment_cancellation_request",
                         Valid = true,
                         From = "BANABEBBXXX",
                         To = "BANAUS33XXX",
-                        SenderAcknowledgementReceipt = DateTime.Parse("2019-07-10T14:22:41+00:00"),
-                        LastUpdateTime =  DateTime.Parse("2019-07-10T14:22:41+00:00")
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T14:22:41+00:00"),
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T14:22:41+00:00")
                     },
                     new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "credit_transfer_payment_cancellation_request",
                         Valid = true,
                         From = "BANABEBBXXX",
                         To = "BANAUS33XXX",
-                        SenderAcknowledgementReceipt = DateTime.Parse("2019-07-10T14:17:39+00:00"),
-                        LastUpdateTime =  DateTime.Parse("2019-07-10T14:22:41+00:00")
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T14:17:39+00:00"),
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T14:22:41+00:00")
                     },
                     new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "customer_credit_transfer_payment",
                         Valid = true, TransactionStatus = new Entity.PaymentTrackingInfo.TransactionStatusDef {
@@ -183,8 +183,8 @@ namespace CurrencyCloud.Tests.Mock.Data
                            DebtorAgent = "GPMRCH30",
                             CreditorAgent = "GPMRQAJ0"
                         },
-                        SenderAcknowledgementReceipt = DateTime.Parse("2019-07-09T13:20:30+00:00"),
-                        InterbankSettlementDate = DateTime.Parse("2019-07-09T00:00:00+00:00"),
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-09T13:20:30+00:00"),
+                        InterbankSettlementDate = DateTimeOffset.Parse("2019-07-09T00:00:00+00:00"),
                         ChargeType = "shared",
                         InstructedAmount = new PaymentTrackingInfo.AmountDef() {
                             Currency = "USD",
@@ -194,7 +194,7 @@ namespace CurrencyCloud.Tests.Mock.Data
                             Currency = "USD",
                             Amount = 745437.57m
                         },
-                        LastUpdateTime =  DateTime.Parse("2019-07-09T13:20:50+00:00")
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-09T13:20:50+00:00")
                     }
             }
         };
