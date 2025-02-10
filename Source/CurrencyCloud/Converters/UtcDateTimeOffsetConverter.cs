@@ -53,7 +53,7 @@ public class UtcDateTimeOffsetConverter : IsoDateTimeConverter
             {
                 DateTimeOffset offset => offset.ToUniversalTime(),
                 DateTime dateTimeValue => new DateTimeOffset(dateTimeValue.ToUniversalTime()),
-                _ => throw new JsonSerializationException($"Unexpected token parsing date. Expected String or Date, got {reader.TokenType}.")
+                _ => throw new JsonSerializationException($"Unexpected date type. Expected DateTimeOffset or DateTime, got {reader.Value?.GetType().Name}.")
             };
         }
 
