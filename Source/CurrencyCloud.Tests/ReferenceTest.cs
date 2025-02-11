@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using CurrencyCloud.Entity;
 using NUnit.Framework;
 using CurrencyCloud.Tests.Mock.Data;
@@ -58,10 +59,18 @@ namespace CurrencyCloud.Tests
 
             Assert.DoesNotThrowAsync(async () => {
                 ConversionDatesList conversionDates = await client.GetConversionDatesAsync("USDGBP");
-                Assert.AreEqual(DateTimeOffset.Parse("2020-11-12T00:00:00"), conversionDates.DefaultConversionDate);
-                Assert.AreEqual(DateTimeOffset.Parse("2020-11-10T00:00:00"), conversionDates.FirstConversionDate);
-                Assert.AreEqual(DateTimeOffset.Parse("2020-11-10T23:19:00+00:00"), conversionDates.FirstConversionCutoffDatetime);
-                Assert.AreEqual(DateTimeOffset.Parse("2020-11-12T00:00:00"), conversionDates.OptimizeLiquidityConversionDate);
+                Assert.AreEqual(
+                    DateTimeOffset.Parse("2020-11-12T00:00:00", formatProvider: null, DateTimeStyles.AssumeUniversal), 
+                    conversionDates.DefaultConversionDate);
+                Assert.AreEqual(
+                    DateTimeOffset.Parse("2020-11-10T00:00:00",formatProvider: null, DateTimeStyles.AssumeUniversal), 
+                    conversionDates.FirstConversionDate);
+                Assert.AreEqual(
+                    DateTimeOffset.Parse("2020-11-10T23:19:00+00:00"), 
+                    conversionDates.FirstConversionCutoffDatetime);
+                Assert.AreEqual(DateTimeOffset.Parse(
+                    "2020-11-12T00:00:00",formatProvider: null, DateTimeStyles.AssumeUniversal), 
+                    conversionDates.OptimizeLiquidityConversionDate);
                 Assert.AreEqual(241, conversionDates.InvalidConversionDates.Count);
             });
         }

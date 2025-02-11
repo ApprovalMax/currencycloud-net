@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using CurrencyCloud.Converters;
 
 [assembly: InternalsVisibleTo("Currencycloud.Tests")]
 
@@ -41,7 +42,8 @@ namespace CurrencyCloud
         private static readonly JsonSerializerSettings JsonSerializerOptions = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new PascalContractResolver()
+            ContractResolver = new PascalContractResolver(),
+            Converters = { new UtcDateTimeOffsetConverter() }
         };
 
         public Client(IHttpClientFactory httpClientFactory, IAuthorizationService authorizationService)
