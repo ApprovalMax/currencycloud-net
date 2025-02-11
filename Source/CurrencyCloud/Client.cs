@@ -902,6 +902,18 @@ namespace CurrencyCloud
         }
 
         /// <summary>
+        /// Return an object that contains information related to Funding
+        /// </summary>
+        /// <param name="id">Funding Id</param>
+        /// <returns>Asynchronous task, which returns funding entity</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<Funding> FindFundingAsync(Guid id)
+        {
+            return await RequestAsync<Funding>("/v2/funding_transactions/" + id, HttpMethod.Get, null);
+        }
+
+        /// <summary>
         /// Triggers a production-like flow for processing funds, topping up CM balance or rejecting the
         /// transaction without topping up CM balance
         /// </summary>
