@@ -8,7 +8,7 @@ namespace CurrencyCloud.Entity.List
     {
         internal PaymentDatesList() { }
 
-        public Dictionary<DateTimeOffset, string> InvalidPaymentDates { get; set; }
+        public Dictionary<DateOnly, string> InvalidPaymentDates { get; set; }
 
         public DateTimeOffset FirstPaymentDate { get; set; }
 
