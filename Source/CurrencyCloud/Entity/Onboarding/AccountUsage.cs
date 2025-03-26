@@ -57,4 +57,8 @@ public class AccountUsage
     /// Initial capital of the company.
     /// </summary>
     public string InitialCapital { get; set; }
+    /// <summary>
+    /// Other source of funds text.
+    /// </summary>
+    public string OtherSourceOfFundsText { get; set; }
 }
