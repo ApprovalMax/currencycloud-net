@@ -585,6 +585,16 @@ public interface ICurrencyCloudClient
     Task<PaymentDeliveryDates> GetPaymentDeliveryDatesAsync(PaymentDeliveryDates paymentDeliveryDates);
 
     /// <summary>
+    /// Assigns a payment fee table to a specific sub-account.
+    /// </summary>
+    /// <param name="paymentFeeId">ID of the payment fee</param>
+    /// <param name="accountId">ID of the account to which the payment fee will be assigned</param>
+    /// <returns>Asynchronous task, which returns the payment fee assignment.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+    /// <exception cref="ApiException">Thrown when API call fails.</exception>
+    Task<PaymentFeeAssignment> AssignPaymentFeeAsync(string paymentFeeId, string accountId);
+
+    /// <summary>
     /// Gets the calculated quote for the fee that will be applied against a payment
     /// </summary>
     /// <param name="quotePaymentFee">Quote Payment Fee Details</param>
