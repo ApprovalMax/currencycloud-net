@@ -1333,6 +1333,28 @@ namespace CurrencyCloud
         }
 
         /// <summary>
+        /// Assigns a payment fee table to a specific sub-account.
+        /// </summary>
+        /// <param name="paymentFeeId">ID of the payment fee</param>
+        /// <param name="accountId">ID of the account to which the payment fee will be assigned</param>
+        /// <returns>Asynchronous task, which returns the payment fee assignment.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
+        /// <exception cref="ApiException">Thrown when API call fails.</exception>
+        public async Task<PaymentFeeAssignment> AssignPaymentFeeAsync(string paymentFeeId, string accountId)
+        {
+            if (string.IsNullOrEmpty(paymentFeeId))
+                throw new ArgumentException("Payment Fee ID cannot be null");
+            if (string.IsNullOrEmpty(accountId))
+                throw new ArgumentException("Account ID cannot be null");
+
+            var paramsObj = new ParamsObject();
+            paramsObj.AddNotNull("payment_fee_id", paymentFeeId);
+            paramsObj.AddNotNull("account_id", accountId);
+
+            return await RequestAsync<PaymentFeeAssignment>("/v2/payments/assign_payment_fee", HttpMethod.Post, paramsObj);
+        }
+
+        /// <summary>
         /// Gets the calculated quote for the fee that will be applied against a payment
         /// </summary>
         /// <param name="quotePaymentFee">Quote Payment Fee Details</param>
