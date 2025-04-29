@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageVersion>0.0.122</PackageVersion>
+    <PackageVersion>0.0.123</PackageVersion>
     <PackageId>ApprovalMax.CurrencyCloud</PackageId>
     <AssemblyName>ApprovalMax.CurrencyCloud</AssemblyName>
     <RootNamespace>CurrencyCloud</RootNamespace>
