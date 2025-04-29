@@ -28,7 +28,7 @@ public abstract class PersonBase
     /// <summary>
     /// Date of Birth
     /// </summary>
-    public DateTimeOffset Dob { get; set; }
+    public DateTimeOffset? Dob { get; set; }
     /// <summary>
     /// Phone number
     /// </summary>
