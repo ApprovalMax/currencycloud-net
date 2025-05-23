@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageVersion>0.0.123</PackageVersion>
+    <PackageVersion>0.0.124</PackageVersion>
     <PackageId>ApprovalMax.CurrencyCloud</PackageId>
     <AssemblyName>ApprovalMax.CurrencyCloud</AssemblyName>
     <RootNamespace>CurrencyCloud</RootNamespace>
@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ApprovalMax.Ensure.That" Version="0.0.0.105" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Polly" Version="7.2.4" />
