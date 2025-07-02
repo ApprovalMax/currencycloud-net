@@ -146,7 +146,7 @@ namespace CurrencyCloud
                 string value;
                 if (param.Value is DateTimeOffset)
                 {
-                    value = ((DateTimeOffset)param.Value).ToString("yyyy-MM-dd");
+                    value = ((DateTimeOffset)param.Value).ToString("yyyy-MM-ddTHH:mm:ssZ");
                 }
                 else if (param.Value is bool)
                 {
