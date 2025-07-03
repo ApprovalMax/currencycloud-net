@@ -1944,7 +1944,7 @@ namespace CurrencyCloud
         }
     }
 
-    public class PascalContractResolver : DefaultContractResolver
+    internal class PascalContractResolver : DefaultContractResolver
     {
         protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
         {
