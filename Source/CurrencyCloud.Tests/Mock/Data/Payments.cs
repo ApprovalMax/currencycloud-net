@@ -27,7 +27,7 @@ namespace CurrencyCloud.Tests.Mock.Data
             Postcode = "W11 2BQ",
             StateOrProvince = "TX",
             Country = "GB",
-            DateOfBirth = new DateTimeOffset(1980, 10, 10, 0, 0, 0, TimeSpan.Zero),
+            DateOfBirth = new DateOnly(1980, 10, 10),
             IdentificationType = "none"
         };
 
@@ -53,7 +53,7 @@ namespace CurrencyCloud.Tests.Mock.Data
             Postcode = "12332",
             StateOrProvince = "Stockholm",
             Country = "SE",
-            DateOfBirth = new DateTime(1981, 12, 10),
+            DateOfBirth = new DateOnly(1981, 12, 10),
             IdentificationType = "none"
         };
 

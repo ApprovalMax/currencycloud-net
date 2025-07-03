@@ -17,7 +17,7 @@ namespace CurrencyCloud.Tests.Mock.Data
                 Status = "enabled",
                 Locale = "en-US",
                 Timezone = "Europe/London",
-                DateOfBirth = new DateTimeOffset(1980, 1, 22, 0, 0, 0, TimeSpan.Zero)
+                DateOfBirth = new DateOnly(1980, 1, 22)
         };
 
         public static readonly Entity.Contact Contact2 = new Entity.Contact (
@@ -33,7 +33,7 @@ namespace CurrencyCloud.Tests.Mock.Data
             Status = "enabled",
             Locale = "en-US",
             Timezone = "Europe/London",
-            DateOfBirth = new DateTime(1960, 1, 29)
+            DateOfBirth = new DateOnly(1960, 1, 29)
         };
     }
 }
