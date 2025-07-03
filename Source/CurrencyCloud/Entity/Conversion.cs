@@ -39,7 +39,7 @@ namespace CurrencyCloud.Entity
         /// if nothing passed then default uses first_conversion_date
         ///</summary>
         [Param]
-        public DateTimeOffset? ConversionDate { get; set; }
+        public DateOnly? ConversionDate { get; set; }
 
         ///<summary>
         /// The current status of the Conversion

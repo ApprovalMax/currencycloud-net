@@ -97,7 +97,7 @@ namespace CurrencyCloud.Entity
         /// Date of birth
         ///</summary>
         [Param]
-        public DateTimeOffset? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
 
         public DateTimeOffset? CreatedAt { get; set; }
 

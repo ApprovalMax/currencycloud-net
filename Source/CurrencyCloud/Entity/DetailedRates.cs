@@ -43,7 +43,7 @@ namespace CurrencyCloud.Entity
         /// The date you want the bought currency to be available
         ///</summary>
         [Param]
-        public DateTimeOffset? ConversionDate { get; set; }
+        public DateOnly? ConversionDate { get; set; }
 
         ///<summary>
         /// The preferred strategy to follow to calculate the conversion date

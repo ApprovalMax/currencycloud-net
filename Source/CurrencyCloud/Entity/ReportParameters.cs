@@ -27,11 +27,11 @@ namespace CurrencyCloud.Entity
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTimeOffset? PaymentDateFrom { get; set; }
+            public DateOnly? PaymentDateFrom { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]
-            public DateTimeOffset? PaymentDateTo { get; set; }
+            public DateOnly? PaymentDateTo { get; set; }
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             [Param]

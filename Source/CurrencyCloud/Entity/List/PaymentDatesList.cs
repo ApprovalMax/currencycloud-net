@@ -10,7 +10,7 @@ namespace CurrencyCloud.Entity.List
 
         public Dictionary<DateOnly, string> InvalidPaymentDates { get; set; }
 
-        public DateTimeOffset FirstPaymentDate { get; set; }
+        public DateOnly FirstPaymentDate { get; set; }
 
         public string ToJSON()
         {
