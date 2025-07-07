@@ -74,7 +74,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -130,7 +130,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -180,7 +180,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -236,7 +236,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -289,7 +289,7 @@
               {
                 "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
                 "settlement_date": "2018-01-01T12:34:56+00:00",
-                "conversion_date": "2018-01-01T12:34:56+00:00",
+                "conversion_date": "2018-01-01T00:00:00+00:00",
                 "short_reference": "20151027-ZMNZZB",
                 "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
                 "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -357,7 +357,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -409,7 +409,7 @@
               {
                 "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
                 "settlement_date": "2018-01-01T12:34:56+00:00",
-                "conversion_date": "2018-01-01T12:34:56+00:00",
+                "conversion_date": "2018-01-01T00:00:00+00:00",
                 "short_reference": "20151027-ZMNZZB",
                 "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
                 "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -477,7 +477,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -563,7 +563,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -647,7 +647,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -732,7 +732,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -784,9 +784,9 @@
             "conversion_id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "amount": "-0.28",
             "currency": "GBP",
-            "new_conversion_date": "2018-02-02T12:34:56+00:00",
+            "new_conversion_date": "2018-02-02T00:00:00+00:00",
             "new_settlement_date": "2018-02-02T12:34:56+00:00",
-            "old_conversion_date": "2018-01-01T12:34:56+00:00",
+            "old_conversion_date": "2018-01-01T00:00:00+00:00",
             "old_settlement_date": "2018-01-01T12:34:56+00:00",
             "event_date_time": "2018-01-01T12:34:56+00:00"
           }
@@ -817,7 +817,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -931,7 +931,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -1030,7 +1030,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -1129,7 +1129,7 @@
           "body": {
             "id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "settlement_date": "2018-01-01T12:34:56+00:00",
-            "conversion_date": "2018-01-01T12:34:56+00:00",
+            "conversion_date": "2018-01-01T00:00:00+00:00",
             "short_reference": "20151027-ZMNZZB",
             "creator_contact_id": "8f639ab2-2b85-4327-9eb1-01ee4f0c77bc",
             "account_id": "78618e58-da3c-447f-ad59-1796accfeff9",
@@ -1186,7 +1186,7 @@
               "buy_amount": 630.23,
               "buy_currency": "EUR",
               "settlement_date": "2018-01-01T12:34:56+00:00",
-              "conversion_date": "2018-01-01T12:34:56+00:00",
+              "conversion_date": "2018-01-01T00:00:00+00:00",
               "status": "awaiting_funds"
             },
             "child_conversion": {
@@ -1197,7 +1197,7 @@
               "buy_amount": 9370.00,
               "buy_currency": "EUR",
               "settlement_date": "2018-01-01T12:34:56+00:00",
-              "conversion_date": "2018-01-01T12:34:56+00:00",
+              "conversion_date": "2018-01-01T00:00:00+00:00",
               "status": "awaiting_funds"
             }
           }
@@ -1229,7 +1229,7 @@
               "buy_amount": 2419.00,
               "buy_currency": "EUR",
               "settlement_date": "2018-01-01T12:34:56+00:00",
-              "conversion_date": "2018-01-01T12:34:56+00:00",
+              "conversion_date": "2018-01-01T00:00:00+00:00",
               "status": "awaiting_funds"
             },
             "child_conversion": {
@@ -1240,7 +1240,7 @@
               "buy_amount": 6951.00,
               "buy_currency": "EUR",
               "settlement_date": "2018-01-01T12:34:56+00:00",
-              "conversion_date": "2018-01-01T12:34:56+00:00",
+              "conversion_date": "2018-01-01T00:00:00+00:00",
               "status": "awaiting_funds"
             }
           }
