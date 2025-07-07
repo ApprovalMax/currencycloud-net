@@ -167,17 +167,13 @@ namespace CurrencyCloud.Tests
 
             Conversion created = await client.CreateConversionAsync(conversion1);
 
-            DateTimeOffset newSettlementDate = DateTimeOffset.Parse("2018-02-02T12:34:56+00:00");
-            ConversionDateChange dateChangeQuoted = await client.QuoteDateChangeConversionAsync(new ConversionDateChange
-            {
-                ConversionId = created.Id,
-                NewSettlementDate = newSettlementDate
-            });
+            DateOnly newSettlementDate = DateOnly.Parse("2018-02-02");
+            ConversionDateChange dateChangeQuoted = await client.QuoteDateChangeConversionAsync(created.Id, newSettlementDate);
 
             Assert.AreEqual(dateChangeQuoted.ConversionId, created.Id);
             Assert.AreEqual(dateChangeQuoted.Currency, created.SellCurrency);
             Assert.NotZero((decimal)dateChangeQuoted.Amount);
-            Assert.AreEqual(dateChangeQuoted.NewSettlementDate, newSettlementDate);
+            Assert.AreEqual(DateOnly.FromDateTime(dateChangeQuoted.NewSettlementDate.Value.Date), newSettlementDate);
             Assert.NotNull(dateChangeQuoted.NewConversionDate);
             Assert.NotNull(dateChangeQuoted.OldConversionDate);
             Assert.NotNull(dateChangeQuoted.OldSettlementDate);
