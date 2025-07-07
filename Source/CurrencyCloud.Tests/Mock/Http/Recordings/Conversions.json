@@ -699,9 +699,9 @@
             "conversion_id": "5c4716dc-42dd-4571-b4bf-0aa299fff928",
             "amount": "-0.28",
             "currency": "GBP",
-            "new_conversion_date": "2018-02-02T12:34:56+00:00",
+            "new_conversion_date": "2018-02-02T00:00:00+00:00",
             "new_settlement_date": "2018-02-02T12:34:56+00:00",
-            "old_conversion_date": "2018-01-01T12:34:56+00:00",
+            "old_conversion_date": "2018-01-01T00:00:00+00:00",
             "old_settlement_date": "2018-01-01T12:34:56+00:00",
             "event_date_time": "2018-01-01T12:34:56+00:00"
           }
@@ -1087,7 +1087,7 @@
               "buy_amount": 630.23,
               "buy_currency": "EUR",
               "settlement_date": "2018-08-10T14:00:00+01:00",
-              "conversiond_date": "2018-08-10T01:00:00+01:00",
+              "conversion_date": "2018-08-10T01:00:00+01:00",
               "status": "awaiting_funds"
             },
             "child_conversion": {
