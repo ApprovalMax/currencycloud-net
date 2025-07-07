@@ -359,7 +359,7 @@ namespace CurrencyCloud.Tests
 
             Assert.That(created, Is.Not.Null);
             Assert.AreEqual(805.90, created.ClientSellAmount);
-            Assert.AreEqual(DateTimeOffset.Parse("2020-05-19T00:00:00+00:00"), created.ConversionDate);
+            Assert.AreEqual(DateOnly.Parse("2020-05-19"), created.ConversionDate);
 
         }
     }

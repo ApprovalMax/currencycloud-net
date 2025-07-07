@@ -26,20 +26,20 @@ public class DateOnlyConverter : IsoDateTimeConverter
 
         if (reader.TokenType == JsonToken.String)
         {
-            if (reader.Value is DateTime dateTimeValue)
-            {
-                return DateOnly.FromDateTime(dateTimeValue.ToUniversalTime());
-            }
-            
             var stringValue = (string)reader.Value;
             if (string.IsNullOrEmpty(stringValue))
             {
                 return null;
             }
-            
-            if (DateTime.TryParse(stringValue, provider: null, DateTimeStyles.AdjustToUniversal, out var dateTime))
+
+            if (DateOnly.TryParse(stringValue, out var dateOnlyValue))
             {
-                return DateOnly.FromDateTime(dateTime.ToUniversalTime());
+                return dateOnlyValue;
+            }
+            
+            if (DateTimeOffset.TryParse(stringValue,  formatProvider: null, DateTimeStyles.AdjustToUniversal, out var dateTimeOffset))
+            {
+                return ToDateOnly(dateTimeOffset);
             }
 
             throw new JsonSerializationException($"Unexpected token parsing date. String value '{stringValue}' is not a valid DateTime.");
@@ -49,13 +49,40 @@ public class DateOnlyConverter : IsoDateTimeConverter
         {
             return reader.Value switch
             {
-                DateTimeOffset dateTimeOffsetValue => DateOnly.FromDateTime(dateTimeOffsetValue.ToUniversalTime().UtcDateTime),
-                DateTime dateTimeValue => DateOnly.FromDateTime(dateTimeValue.ToUniversalTime()),
+                DateTimeOffset dateTimeOffsetValue => ToDateOnly(dateTimeOffsetValue),
+                DateTime dateTimeValue => ToDateOnly(dateTimeValue),
                 DateOnly dateOnlyValue => dateOnlyValue,
-                _ => throw new JsonSerializationException($"Unexpected date type. Expected DateTimeOffset, DateTime or DateOnly, got {reader.Value?.GetType().Name}.")
+                _ => throw new JsonSerializationException(
+                    $"Unexpected date type. Expected DateTimeOffset, DateTime or DateOnly, got {reader.Value?.GetType().Name}.")
             };
         }
 
         throw new JsonSerializationException($"Unexpected token parsing date. Expected String or Date, got {reader.TokenType}.");
+    }
+
+    private static DateOnly ToDateOnly(DateTimeOffset dateTimeOffset)
+    {
+        var dateTimeUtc = dateTimeOffset.UtcDateTime;
+
+        return UtcDateTimeToDateOnly(dateTimeUtc);
+    }
+
+    private static DateOnly ToDateOnly(DateTime dateTime)
+    {
+        var dateTimeUtc = dateTime.ToUniversalTime();
+
+        return UtcDateTimeToDateOnly(dateTimeUtc);
+    }
+    
+    private static DateOnly UtcDateTimeToDateOnly(DateTime dateTime)
+    {
+        if (dateTime.TimeOfDay != TimeSpan.Zero)
+        {
+            throw new JsonSerializationException($"Time component found in date string '{dateTime}'. DateOnly expects a date without a time component.");
+        }
+        
+        var (dateOnly, _) = dateTime;
+        
+        return dateOnly;
     }
 }
