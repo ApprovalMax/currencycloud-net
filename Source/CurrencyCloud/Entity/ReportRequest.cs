@@ -22,7 +22,7 @@ namespace CurrencyCloud.Entity
 
         public string FailureReason { get; set; }
 
-        public DateTimeOffset? ExpirationDate { get; set; }
+        public DateOnly? ExpirationDate { get; set; }
 
         public string ReportUrl { get; set; }
 

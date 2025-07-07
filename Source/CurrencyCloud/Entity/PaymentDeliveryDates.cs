@@ -8,7 +8,7 @@ namespace CurrencyCloud.Entity
         [JsonConstructor]
         public PaymentDeliveryDates() { }
 
-        public PaymentDeliveryDates(DateTime paymentDate, string paymentType, string currency, string bankCountry)
+        public PaymentDeliveryDates(DateOnly paymentDate, string paymentType, string currency, string bankCountry)
         {
             this.PaymentDate = paymentDate;
             this.PaymentType = paymentType;
@@ -17,7 +17,7 @@ namespace CurrencyCloud.Entity
         }
 
         [Param]
-        public DateTimeOffset? PaymentDate { get; set; }
+        public DateOnly? PaymentDate { get; set; }
 
         [Param]
         public string PaymentType { get; set; }
@@ -28,7 +28,7 @@ namespace CurrencyCloud.Entity
         [Param]
         public string BankCountry { get; set; }
 
-        public DateTimeOffset? PaymentDeliveryDate { get; set; }
+        public DateOnly? PaymentDeliveryDate { get; set; }
 
         public DateTimeOffset? PaymentCutoffTime { get; set; }
 

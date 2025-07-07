@@ -69,7 +69,7 @@ namespace CurrencyCloud.Entity
         ///<summary>
         /// Payer date of birth(company creation date when payer_entity_type is company)
         ///</summary>
-        public DateTimeOffset? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
 
         public DateTimeOffset? CreatedAt { get; set; }
 

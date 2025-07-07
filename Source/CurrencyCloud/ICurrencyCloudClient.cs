@@ -650,7 +650,7 @@ public interface ICurrencyCloudClient
     /// <returns>Asynchronous task, which returns the list of the conversion dates.</returns>
     /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
-    Task<ConversionDatesList> GetConversionDatesAsync(string conversionPair, DateTimeOffset? startDate = null);
+    Task<ConversionDatesList> GetConversionDatesAsync(string conversionPair, DateOnly? startDate = null);
 
     /// <summary>
     /// Gets a list of all the currencies that are tradeable.
@@ -679,7 +679,7 @@ public interface ICurrencyCloudClient
     /// <returns>Asynchronous task, which returns the list of the payment dates.</returns>
     /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
-    Task<PaymentDatesList> GetPaymentDatesAsync(string currency, DateTimeOffset? startDate = null);
+    Task<PaymentDatesList> GetPaymentDatesAsync(string currency, DateOnly? startDate = null);
 
     /// <summary>
     /// Gets settlement account information, detailing where funds need to be sent to.

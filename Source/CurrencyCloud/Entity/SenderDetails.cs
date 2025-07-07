@@ -16,7 +16,7 @@ namespace CurrencyCloud.Entity
 
         public string AdditionalInformation { get; set; }
 
-        public DateTimeOffset? ValueDate { get; set; }
+        public DateOnly? ValueDate { get; set; }
 
         public string Sender { get; set; }
 

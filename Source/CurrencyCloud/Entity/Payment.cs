@@ -84,7 +84,7 @@ namespace CurrencyCloud.Entity
         /// ISO 8601 Date when the payment should be paid
         ///</summary>
         [Param]
-        public DateTimeOffset? PaymentDate { get; set; }
+        public DateOnly? PaymentDate { get; set; }
 
         public DateTimeOffset? TransferredAt { get; set; }
 

@@ -22,7 +22,7 @@ namespace CurrencyCloud.Tests.Mock.Data
             CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
             Id = "de5c215d-93e2-4b24-bdc8-bffbcd80c60f",
             Status = "completed",
-            ExpirationDate = DateTimeOffset.Parse("2018-01-31T00:00:00Z"),
+            ExpirationDate = DateOnly.Parse("2018-01-31"),
             UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
         };
 
@@ -42,7 +42,7 @@ namespace CurrencyCloud.Tests.Mock.Data
             CreatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00"),
             Id = "2d71d2de-bc17-4ffb-88f4-d644b327340f",
             Status = "completed",
-            ExpirationDate = DateTimeOffset.Parse("2018-01-31T00:00:00Z"),
+            ExpirationDate = DateOnly.Parse("2018-01-31"),
             UpdatedAt = DateTimeOffset.Parse("2018-01-01T12:34:56+00:00")
         };
 

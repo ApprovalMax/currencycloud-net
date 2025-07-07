@@ -20,7 +20,7 @@ namespace CurrencyCloud.Entity
 
         public decimal? Amount { get; set; }
 
-        public DateTimeOffset? NewConversionDate { get; set; }
+        public DateOnly? NewConversionDate { get; set; }
 
         /// <summary>
         /// New conversion settlement date
@@ -28,7 +28,7 @@ namespace CurrencyCloud.Entity
         [Param]
         public DateTimeOffset? NewSettlementDate { get; set; }
 
-        public DateTimeOffset? OldConversionDate { get; set; }
+        public DateOnly? OldConversionDate { get; set; }
 
         public DateTimeOffset? OldSettlementDate { get; set; }
 
