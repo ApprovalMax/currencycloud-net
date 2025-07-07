@@ -769,18 +769,16 @@ namespace CurrencyCloud
         /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
         /// <exception cref="ApiException">Thrown when API call fails.</exception>
         public async Task<ConversionDateChange> QuoteDateChangeConversionAsync(
-            ConversionDateChange conversionDateChange)
+            string conversionId,
+            DateOnly newSettlementDate)
         {
-            ParamsObject paramsObj = ParamsObject.CreateFromStaticObject(conversionDateChange);
-            string id = conversionDateChange.ConversionId;
-            DateTimeOffset? newSettlementDate = conversionDateChange.NewSettlementDate;
-
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(conversionId))
                 throw new ArgumentException("Conversion Id cannot be null");
-            if (!newSettlementDate.HasValue)
-                throw new ArgumentException("New Settlement Date cannot be null");
+            
+            var paramsObj = new ParamsObject();
+            paramsObj.Add("NewSettlementDate", newSettlementDate);
 
-            return await RequestAsync<ConversionDateChange>("/v2/conversions/" + id + "/date_change_quote",
+            return await RequestAsync<ConversionDateChange>("/v2/conversions/" + conversionId + "/date_change_quote",
                 HttpMethod.Get, paramsObj);
         }
 

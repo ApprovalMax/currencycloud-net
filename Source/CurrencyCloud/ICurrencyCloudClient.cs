@@ -289,11 +289,12 @@ public interface ICurrencyCloudClient
     /// <summary>
     /// Returns an object containing the quote for changing the date of the specified conversion.
     /// </summary>
-    /// <param name="conversionDateChange">Object holding the Id and New Settlement Date of the conversion that is being changed</param>
+    /// <param name="conversionId">Unique identifier of the conversion to change the date for</param>
+    /// <param name="newSettlementDate">New settlement date for the conversion</param>
     /// <returns>Asynchronous task, which returns the details of the conversion date change</returns>
     /// <exception cref="InvalidOperationException">Thrown when client is not initialized.</exception>
     /// <exception cref="ApiException">Thrown when API call fails.</exception>
-    Task<ConversionDateChange> QuoteDateChangeConversionAsync(ConversionDateChange conversionDateChange);
+    Task<ConversionDateChange> QuoteDateChangeConversionAsync(string conversionId, DateOnly newSettlementDate);
 
     /// <summary>
     /// Changes the date ofthe conversion identified by the provided unique id.
