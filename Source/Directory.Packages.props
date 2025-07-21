@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <ApprovalMaxEnsureThatPackageVersion>0.0.0.105</ApprovalMaxEnsureThatPackageVersion>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <DotNetSdkPackagesVersion>9.0.7</DotNetSdkPackagesVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="ApprovalMax.Ensure.That" Version="$(ApprovalMaxEnsureThatPackageVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="$(DotNetSdkPackagesVersion)" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="NUnit" Version="3.14.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageVersion Include="Polly" Version="8.6.1" />
+  </ItemGroup>
+</Project> 
