@@ -1,0 +1,34 @@
+version: 2
+registries:
+  approvalmax-github:
+    type: nuget-feed
+    url: https://nuget.pkg.github.com
+    # The token requires the `read:packages` scope only
+    token: ${{ secrets.DEPENDABOT_GITHUB_PACKAGES_TOKEN }}
+
+updates:
+  - package-ecosystem: 'nuget'
+    directory: '/Source'
+    reviewers:
+      - 'ApprovalMax/pay-be'
+    registries:
+      - approvalmax-github
+    schedule:
+      interval: 'weekly'
+      day: 'friday'
+      time: '10:00'
+      timezone: 'Europe/London'
+    groups:
+      all-nugets:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: 'deps'
+      include: 'scope'
+    ignore:
+      - dependency-name: 'NUnit'
+        # Get rid of in favor of xUnit
+        versions: '4.*.*'
+      - dependency-name: 'NUnit3TestAdapter'
+        # Get rid of in favor of xUnit
+        versions: '5.*.*' 
