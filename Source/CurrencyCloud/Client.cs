@@ -1933,7 +1933,7 @@ namespace CurrencyCloud
                 case 422:
                     return new ValidationException(request, response, errors);
                 case 429:
-                    return new TooManyRequestsException(request, response, errors);
+                    return new TooManyRequestsException(request, response, errors, res.Headers.RetryAfter?.Date);
                 case 500:
                     return new InternalApplicationException(request, response, errors);
                 default:

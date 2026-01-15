@@ -131,7 +131,13 @@ namespace CurrencyCloud.Exception
 
     public class TooManyRequestsException : ApiException
     {
-        public TooManyRequestsException(Request request, Response response, List<Error> errors): base(request, response, errors) { }
+        public TooManyRequestsException(Request request, Response response, List<Error> errors, DateTimeOffset? retryAfter)
+            : base(request, response, errors)
+        {
+            RetryAfter = retryAfter;
+        }
+        
+        public DateTimeOffset? RetryAfter { get; }
     }
 
     public class InternalApplicationException : ApiException
