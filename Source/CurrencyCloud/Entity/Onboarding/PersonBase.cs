@@ -50,6 +50,11 @@ public abstract class PersonBase
     /// </summary>
     public required string HomeCountry { get; set; }
     /// <summary>
+    /// ISO 3166-1 alpha-2 country code of the person's citizenship.
+    /// If the person holds multiple citizenships, the one they most identify with should be used.
+    /// </summary>
+    public string Citizenship { get; set; }
+    /// <summary>
     /// Passport number
     /// </summary>
     public string PassportNumber { get; set; }
