@@ -35,7 +35,7 @@ jobs:
         run: >-
           dotnet pack ./CurrencyCloud/CurrencyCloud.csproj
           "-p:Platform=Any CPU"
-          -p:RepositoryUrl=https://github.com/ApprovalMax/approvalmax-product
+          -p:RepositoryUrl=https://github.com/ApprovalMax/currencycloud-net
           -p:Company=ApprovalMax
           -p:Authors=ApprovalMax
           --output ./build
