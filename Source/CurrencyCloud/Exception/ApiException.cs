@@ -49,6 +49,14 @@ namespace CurrencyCloud.Exception
             yamlBuilder.AppendFormat("  request_id: {0}", Response.RequestId);
             yamlBuilder.AppendLine();
 
+            if (Errors.Count == 0 && !string.IsNullOrEmpty(Response.RawBody))
+            {
+                // The only diagnostic that exists when the body carried no error_messages
+                // (e.g. a 413 refused by an edge proxy). Bounded by Response.RawBodyMaxLength.
+                yamlBuilder.AppendFormat("  raw_body: {0}", FlattenToSingleLine(Response.RawBody));
+                yamlBuilder.AppendLine();
+            }
+
             yamlBuilder.Append("errors:");
             foreach (var error in Errors)
             {
@@ -78,6 +86,11 @@ namespace CurrencyCloud.Exception
             }
 
             return yamlBuilder.ToString();
+        }
+
+        private static string FlattenToSingleLine(string value)
+        {
+            return value.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ");
         }
 
         protected ApiException(Request request, Response response, List<Error> errors)
@@ -150,6 +163,19 @@ namespace CurrencyCloud.Exception
         public ValidationException(Request request, Response response, List<Error> errors): base(request, response, errors) { }
     }
 
+    /// <summary>
+    /// Thrown when the provider answers 413. Terminal: retrying sends the same oversized body again.
+    /// </summary>
+    public class PayloadTooLargeException : ApiException
+    {
+        public PayloadTooLargeException(Request request, Response response, List<Error> errors): base(request, response, errors) { }
+    }
+
+    public class RequestTimeoutException : ApiException
+    {
+        public RequestTimeoutException(Request request, Response response, List<Error> errors): base(request, response, errors) { }
+    }
+
     public class UndefinedException : ApiException
     {
         public UndefinedException(Request request, Response response, List<Error> errors) : base(request, response, errors) { }
@@ -177,15 +203,44 @@ namespace CurrencyCloud.Exception
     /// </summary>
     public class Response
     {
+        /// <summary>
+        /// Upper bound on the retained response body, so that <see cref="ApiException.Message"/> stays bounded.
+        /// </summary>
+        public const int RawBodyMaxLength = 2048;
+
         public readonly int StatusCode;
         public readonly DateTime Date;
         public readonly string RequestId;
 
+        /// <summary>
+        /// The response body as received, truncated to <see cref="RawBodyMaxLength"/>. May be empty.
+        /// It is the only diagnostic available when the body could not be parsed into errors.
+        /// </summary>
+        public readonly string RawBody;
+
         public Response(int statusCode, DateTime date, string requestId)
+            : this(statusCode, date, requestId, string.Empty)
+        {
+        }
+
+        public Response(int statusCode, DateTime date, string requestId, string rawBody)
         {
             StatusCode = statusCode;
             Date = date;
             RequestId = requestId;
+            RawBody = Truncate(rawBody);
+        }
+
+        private static string Truncate(string rawBody)
+        {
+            if (string.IsNullOrEmpty(rawBody))
+            {
+                return string.Empty;
+            }
+
+            return rawBody.Length <= RawBodyMaxLength
+                ? rawBody
+                : rawBody.Substring(0, RawBodyMaxLength);
         }
     }
 

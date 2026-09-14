@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 using System.Web;
 using CurrencyCloud.Converters;
 
-[assembly: InternalsVisibleTo("Currencycloud.Tests")]
+[assembly: InternalsVisibleTo("CurrencyCloud.Tests")]
 
 namespace CurrencyCloud
 {
@@ -1835,6 +1835,15 @@ namespace CurrencyCloud
     {
         private static Request CreateRequest(HttpRequestMessage requestMessage)
         {
+            // Hand-built responses (and some handler pipelines) carry no request message.
+            if (requestMessage?.RequestUri == null)
+            {
+                return new Request(
+                    new Dictionary<string, string>(),
+                    requestMessage?.Method?.Method ?? string.Empty,
+                    string.Empty);
+            }
+
             var query = requestMessage.RequestUri.Query;
             var queryParams = HttpUtility.ParseQueryString(query);
 
@@ -1850,7 +1859,8 @@ namespace CurrencyCloud
             return new Request(parameters, verb, url);
         }
 
-        private static Response CreateResponse(HttpStatusCode statusCode, HttpResponseHeaders responseHeaders)
+        private static Response CreateResponse(HttpStatusCode statusCode, HttpResponseHeaders responseHeaders,
+            string body)
         {
             IEnumerable<string> values;
 
@@ -1866,79 +1876,152 @@ namespace CurrencyCloud
                 DateTime.TryParse(values.First(), out date);
             }
 
-            return new Response((int)statusCode, date, requestId);
+            return new Response((int)statusCode, date, requestId, body);
         }
 
-        private static async Task<List<Error>> CreateErrors(HttpContent content)
+        private static async Task<string> ReadBodySafeAsync(HttpContent content)
         {
-            var errorString = await content.ReadAsStringAsync();
-            var errorObject = JObject.Parse(errorString);
-
-            var errors = from JProperty error in errorObject["error_messages"]
-                         select new Error(
-                             error.Name,
-                             error.Value is JArray
-                                 ? (from errorMessage in error.Value
-                                    select new Error.ErrorMessage(
-                               GetTokenValue(errorMessage, "code", "error_code"),
-                               GetTokenValue(errorMessage, "message", "reason"),
-                               GetParamsDictionary(errorMessage["params"])
-                           )).ToList()
-                                 : new List<Error.ErrorMessage>
-                                 {
-                            new Error.ErrorMessage(
-                                GetTokenValue(error.Value, "code", "error_code"),
-                                GetTokenValue(error.Value, "message", "reason"),
-                                GetParamsDictionary(error.Value["params"])
-                            )
-                                 }
-                         );
-
-            return errors.ToList();
-
-            static string GetTokenValue(JToken token, string primaryKey, string fallbackKey)
+            if (content == null)
             {
-                return token[primaryKey]?.Value<string>() ?? token[fallbackKey]?.Value<string>();
+                return string.Empty;
             }
 
-            static Dictionary<string, string> GetParamsDictionary(JToken paramsToken)
+            try
             {
-                if (paramsToken == null)
+                return await content.ReadAsStringAsync() ?? string.Empty;
+            }
+            catch (System.Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        private static List<Error> CreateErrors(string body)
+        {
+            if (string.IsNullOrWhiteSpace(body))
+            {
+                return new List<Error>();
+            }
+
+            JObject messages;
+
+            try
+            {
+                if (JsonConvert.DeserializeObject<JToken>(body) is not JObject root ||
+                    root["error_messages"] is not JObject parsed)
                 {
-                    return new Dictionary<string, string>();
+                    return new List<Error>();
                 }
 
-                return (from JProperty param in paramsToken
-                        select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
-                    .ToDictionary(x => x.Key, x => x.Value);
+                messages = parsed;
             }
+            // A body we cannot parse at all costs us the error detail, never the status.
+            catch (System.Exception ex)
+            {
+                Debug.WriteLine("UTC: {0} - Could not parse error body: {1}", DateTime.UtcNow, ex.Message);
+
+                return new List<Error>();
+            }
+
+            var errors = new List<Error>();
+
+            // Per field, so that one shape we failed to anticipate costs us that field and not the rest.
+            foreach (var error in messages.Properties())
+            {
+                try
+                {
+                    var errorMessages = CreateErrorMessages(error.Value);
+
+                    if (errorMessages.Count > 0)
+                    {
+                        errors.Add(new Error(error.Name, errorMessages));
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.WriteLine("UTC: {0} - Could not parse error field '{1}': {2}",
+                        DateTime.UtcNow, error.Name, ex.Message);
+                }
+            }
+
+            return errors;
         }
 
+        private static List<Error.ErrorMessage> CreateErrorMessages(JToken errorValue)
+        {
+            if (errorValue is JArray errorMessages)
+            {
+                // OfType drops any non-object item: it carries no code/message/params to lift out.
+                return errorMessages
+                    .OfType<JObject>()
+                    .Select(errorMessage => new Error.ErrorMessage(
+                        GetTokenValue(errorMessage, "code", "error_code"),
+                        GetTokenValue(errorMessage, "message", "reason"),
+                        GetParamsDictionary(errorMessage["params"])))
+                    .ToList();
+            }
+
+            // Some codes (e.g. invalid_iban) return the message as a bare object rather than an array.
+            if (errorValue is JObject)
+            {
+                return new List<Error.ErrorMessage>
+                {
+                    new Error.ErrorMessage(
+                        GetTokenValue(errorValue, "code", "error_code"),
+                        GetTokenValue(errorValue, "message", "reason"),
+                        GetParamsDictionary(errorValue["params"])
+                    )
+                };
+            }
+
+            // A scalar or null leaf: the field name is all there is, which is not worth an entry.
+            return new List<Error.ErrorMessage>();
+        }
+
+        private static string GetTokenValue(JToken token, string primaryKey, string fallbackKey)
+        {
+            if (token is not JObject)
+            {
+                return null;
+            }
+
+            return token[primaryKey]?.Value<string>() ?? token[fallbackKey]?.Value<string>();
+        }
+
+        private static Dictionary<string, string> GetParamsDictionary(JToken paramsToken)
+        {
+            if (paramsToken is not JObject)
+            {
+                return new Dictionary<string, string>();
+            }
+
+            return (from JProperty param in paramsToken
+                    select new KeyValuePair<string, string>(param.Name, param.Value.ToString()))
+                .ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        // The body is read once and is never allowed to break status mapping:
+        // losing the HTTP status is strictly worse than losing the error detail.
         public static async Task<ApiException> FromHttpResponse(HttpResponseMessage res)
         {
+            var body = await ReadBodySafeAsync(res.Content);
             var request = CreateRequest(res.RequestMessage);
-            var response = CreateResponse(res.StatusCode, res.Headers);
-            var errors = await CreateErrors(res.Content);
+            var response = CreateResponse(res.StatusCode, res.Headers, body);
+            var errors = CreateErrors(body);
 
-            switch (response.StatusCode)
+            return response.StatusCode switch
             {
-                case 400:
-                    return new BadRequestException(request, response, errors);
-                case 401:
-                    return new AuthenticationException(request, response, errors);
-                case 403:
-                    return new ForbiddenException(request, response, errors);
-                case 404:
-                    return new NotFoundException(request, response, errors);
-                case 422:
-                    return new ValidationException(request, response, errors);
-                case 429:
-                    return new TooManyRequestsException(request, response, errors, res.Headers.RetryAfter?.Date);
-                case 500:
-                    return new InternalApplicationException(request, response, errors);
-                default:
-                    return new UndefinedException(request, response, errors);
-            }
+                400 => new BadRequestException(request, response, errors),
+                401 => new AuthenticationException(request, response, errors),
+                403 => new ForbiddenException(request, response, errors),
+                404 => new NotFoundException(request, response, errors),
+                408 => new RequestTimeoutException(request, response, errors),
+                413 => new PayloadTooLargeException(request, response, errors),
+                422 => new ValidationException(request, response, errors),
+                429 => new TooManyRequestsException(request, response, errors, res.Headers.RetryAfter?.Date),
+                500 => new InternalApplicationException(request, response, errors),
+                _ => new UndefinedException(request, response, errors)
+            };
         }
     }
 
