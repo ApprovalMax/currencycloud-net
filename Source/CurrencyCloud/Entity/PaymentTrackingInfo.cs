@@ -121,7 +121,7 @@ namespace CurrencyCloud.Entity
             public AmountDef ConfirmedAmount { get; set; }
             public AmountDef InterbankSettlementAmount { get; set; }
             public DateTimeOffset? InterbankSettlementDate { get; set; }
-            public AmountDef ChargeAmount { get; set; }
+            public AmountDef[] ChargeAmount { get; set; }
             public string ChargeType { get; set; }
             public ForeignExchangeDetailsDef ForeignExchangeDetails { get; set; }
             public DateTimeOffset? LastUpdateTime { get; set; }
@@ -178,7 +178,9 @@ namespace CurrencyCloud.Entity
                        Equals(ConfirmedAmount, paymentEvent.ConfirmedAmount) &&
                        Equals(InterbankSettlementAmount, paymentEvent.InterbankSettlementAmount) &&
                        InterbankSettlementDate == paymentEvent.InterbankSettlementDate &&
-                       Equals(ChargeAmount, paymentEvent.ChargeAmount) &&
+                       (ChargeAmount == paymentEvent.ChargeAmount ||
+                        (ChargeAmount != null && paymentEvent.ChargeAmount != null &&
+                         ChargeAmount.SequenceEqual(paymentEvent.ChargeAmount))) &&
                        ChargeType == paymentEvent.ChargeType &&
                        Equals(ForeignExchangeDetails, paymentEvent.ForeignExchangeDetails) &&
                        LastUpdateTime == paymentEvent.LastUpdateTime;

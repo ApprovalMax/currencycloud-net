@@ -198,5 +198,50 @@ namespace CurrencyCloud.Tests.Mock.Data
                     }
             }
         };
+
+        public static readonly PaymentTrackingInfo TrackingInfoWithChargeAmounts = new Entity.PaymentTrackingInfo
+        {
+            Uetr = "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+            InitiationTime = DateTimeOffset.Parse("2019-07-09T13:20:30+00:00"),
+            LastUpdateTime = DateTimeOffset.Parse("2019-07-10T15:39:08+00:00"),
+            TransactionStatus = new Entity.PaymentTrackingInfo.TransactionStatusDef {
+                Status = "processing",
+                Reason = "transferred_and_tracked"
+            },
+            PaymentEvents = new List<PaymentTrackingInfo.PaymentEvent>() {
+                    new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "customer_credit_transfer_payment",
+                        Valid = true,
+                        From = "BANABEBBXXX",
+                        To = "BANAUS33XXX",
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T15:39:08+00:00"),
+                        ChargeAmount = new[] {
+                            new PaymentTrackingInfo.AmountDef() {
+                                Currency = "USD",
+                                Amount = 15.00m
+                            },
+                            new PaymentTrackingInfo.AmountDef() {
+                                Currency = "USD",
+                                Amount = 7.50m
+                            }
+                        },
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T15:39:08+00:00")
+                    },
+                    new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "customer_credit_transfer_payment",
+                        Valid = true,
+                        From = "BANABEBBXXX",
+                        To = "BANAUS33XXX",
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-10T14:22:41+00:00"),
+                        ChargeAmount = Array.Empty<PaymentTrackingInfo.AmountDef>(),
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-10T14:22:41+00:00")
+                    },
+                    new PaymentTrackingInfo.PaymentEvent(){ TrackerEventType = "customer_credit_transfer_payment",
+                        Valid = true,
+                        From = "BANABEBBXXX",
+                        To = "BANAUS33XXX",
+                        SenderAcknowledgementReceipt = DateTimeOffset.Parse("2019-07-09T13:20:30+00:00"),
+                        LastUpdateTime =  DateTimeOffset.Parse("2019-07-09T13:20:30+00:00")
+                    }
+            }
+        };
     }
 }
