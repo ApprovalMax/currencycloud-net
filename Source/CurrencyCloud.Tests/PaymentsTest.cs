@@ -302,5 +302,28 @@ namespace CurrencyCloud.Tests
             Assert.AreEqual(trackingInfo1, received);
         }
 
+        /// <summary>
+        /// Successfully gets a tracking info whose payment events have an array, an empty array and no charge amounts.
+        /// </summary>
+        [Test]
+        public async Task GetTrackingInfoWithChargeAmounts()
+        {
+            player.Play("GetTrackingInfoWithChargeAmounts");
+
+            var trackingInfo = Payments.TrackingInfoWithChargeAmounts;
+
+            PaymentTrackingInfo received = await client.GetPaymentTrackingInfoAsync(trackingInfo.Uetr);
+            Assert.AreEqual(trackingInfo.ToJSON(), received.ToJSON());
+            Assert.AreEqual(trackingInfo, received);
+
+            Assert.AreEqual(2, received.PaymentEvents[0].ChargeAmount.Length);
+            Assert.AreEqual("USD", received.PaymentEvents[0].ChargeAmount[0].Currency);
+            Assert.AreEqual(15.00m, received.PaymentEvents[0].ChargeAmount[0].Amount);
+            Assert.AreEqual(7.50m, received.PaymentEvents[0].ChargeAmount[1].Amount);
+            Assert.IsNotNull(received.PaymentEvents[1].ChargeAmount);
+            Assert.IsEmpty(received.PaymentEvents[1].ChargeAmount);
+            Assert.IsNull(received.PaymentEvents[2].ChargeAmount);
+        }
+
     }
 }
